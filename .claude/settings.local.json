@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(mkdir -p /c/Users/RUI/Desktop/final-work/.temp-clone)",
-      "Bash(git clone *)"
+      "Bash(git clone *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npx vite *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s \"http://localhost:5173/api/bilibili/x/web-interface/popular?pn=1&ps=3\")",
+      "Bash(curl -s -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://www.bilibili.com\" \"https://api.bilibili.com/x/web-interface/popular?pn=1&ps=2\")",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(curl -s \"http://localhost:5173/api/bilibili/x/web-interface/popular?pn=1&ps=1\")"
     ]
   }
 }

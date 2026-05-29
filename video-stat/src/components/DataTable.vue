@@ -1,0 +1,91 @@
+<script setup>
+import { computed } from 'vue'
+import { formatNumber, formatDateTime } from '../utils/date.js'
+
+const props = defineProps({
+  videos: Array,
+})
+
+const columns = [
+  { prop: 'rank', label: '#', width: 60 },
+  { prop: 'title', label: '视频标题', minWidth: 240 },
+  { prop: 'owner', label: 'UP主', width: 120 },
+  { prop: 'tname', label: '分区', width: 90 },
+  { prop: 'categoryGroup', label: '分类', width: 90 },
+  { prop: 'view', label: '播放量', width: 110 },
+  { prop: 'like', label: '点赞', width: 90 },
+  { prop: 'reply', label: '评论', width: 80 },
+  { prop: 'danmaku', label: '弹幕', width: 80 },
+  { prop: 'pubdate', label: '发布时间', width: 160 },
+]
+
+const tableData = computed(() =>
+  props.videos.map((v, i) => ({
+    ...v,
+    rank: i + 1,
+    viewFmt: formatNumber(v.view),
+    likeFmt: formatNumber(v.like),
+    replyFmt: formatNumber(v.reply),
+    danmakuFmt: formatNumber(v.danmaku),
+    pubdateFmt: formatDateTime(v.pubdate),
+  }))
+)
+</script>
+
+<template>
+  <div class="table-box">
+    <h3 class="table-title">热门视频列表 (共 {{ videos.length }} 条)</h3>
+    <el-table
+      :data="tableData"
+      stripe
+      style="width: 100%"
+      :default-sort="{ prop: 'rank', order: 'ascending' }"
+      max-height="600"
+      size="default"
+    >
+      <el-table-column prop="rank" label="#" width="55" sortable />
+      <el-table-column prop="title" label="视频标题" min-width="240" show-overflow-tooltip>
+        <template #default="{ row }">
+          <a
+            :href="`https://www.bilibili.com/video/${row.bvid}`"
+            target="_blank"
+            class="video-link"
+          >{{ row.title }}</a>
+        </template>
+      </el-table-column>
+      <el-table-column prop="owner" label="UP主" width="120" />
+      <el-table-column prop="tname" label="分区" width="90" />
+      <el-table-column prop="categoryGroup" label="分类" width="90">
+        <template #default="{ row }">
+          <el-tag size="small" type="primary">{{ row.categoryGroup }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="viewFmt" label="播放量" width="100" sortable sort-by="view" />
+      <el-table-column prop="likeFmt" label="点赞" width="90" sortable sort-by="like" />
+      <el-table-column prop="replyFmt" label="评论" width="80" sortable sort-by="reply" />
+      <el-table-column prop="danmakuFmt" label="弹幕" width="80" sortable sort-by="danmaku" />
+      <el-table-column prop="pubdateFmt" label="发布时间" width="160" sortable sort-by="pubdate" />
+    </el-table>
+  </div>
+</template>
+
+<style scoped>
+.table-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+.table-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: #303133;
+}
+.video-link {
+  color: #409eff;
+  text-decoration: none;
+}
+.video-link:hover {
+  text-decoration: underline;
+}
+</style>

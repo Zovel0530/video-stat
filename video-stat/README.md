@@ -1,5 +1,195 @@
-# Vue 3 + Vite
+# 短视频趋势分析平台
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+B站热门视频排行榜 · 视频类型智能分类 · 数据导出Excel报表
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 1. 项目目的
+
+### 项目背景
+短视频平台已成为内容消费的核心渠道，每天有海量视频被创作和传播。内容创作者、运营人员和市场营销从业者需要了解当前热门趋势，以便做出数据驱动的决策。
+
+### 解决的问题
+- 手动浏览B站热门页面无法获取系统化的数据分析
+- 缺乏按视频类型聚合的流量统计视图
+- 没有便捷的方式导出热门视频数据进行二次分析
+
+### 应用场景
+- 内容创作者分析热门选题方向
+- 运营人员追踪内容趋势变化
+- 数据分析师获取短视频行业数据样本
+
+### 创新点
+- 同时提供「近7天」和「近30天」两种时间窗口
+- 基于B站分区体系自动进行视频类型归类
+- 一键导出含视频列表、分类分析、数据概览三个工作表的Excel报表
+- 可视化图表直观展示类型分布与播放量对比
+
+## 2. 技术架构
+
+### 技术栈
+
+| 层级 | 技术 | 说明 |
+|------|------|------|
+| 前端框架 | Vue 3 (Composition API) | 组件化开发，响应式数据管理 |
+| 构建工具 | Vite 8 | 极速开发体验，ES Modules原生支持 |
+| UI组件 | Element Plus | 专业的企业级UI组件库 |
+| 数据可视化 | ECharts 6 + vue-echarts | 饼图、柱状图展示数据 |
+| HTTP请求 | Axios | 异步数据获取 |
+| Excel导出 | SheetJS (xlsx) | 客户端生成xlsx文件 |
+| 服务端 | Node.js + Express | API代理与生产环境部署 |
+
+### 项目结构
+
+```
+video-stat/
+├── index.html                # 入口HTML
+├── vite.config.js            # Vite配置（含API代理）
+├── package.json              # 项目依赖
+├── server/                   # 后端服务
+│   ├── index.js              # Express服务器入口
+│   └── services/
+│       ├── bilibili.js       # B站API数据抓取
+│       ├── classifier.js     # 视频分类引擎
+│       └── excel.js          # Excel生成（服务端）
+└── src/                      # 前端源码
+    ├── main.js               # Vue应用入口
+    ├── App.vue               # 根组件
+    ├── api/
+    │   ├── request.js        # Axios封装
+    │   └── bilibili.js       # B站API接口定义
+    ├── utils/
+    │   ├── classifier.js     # 视频分类逻辑
+    │   ├── date.js           # 日期/数字格式化工具
+    │   └── excel.js          # Excel导出功能
+    ├── views/
+    │   └── Index.vue         # 主页面（数据获取与状态管理）
+    └── components/
+        ├── FilterPanel.vue   # 平台与时间筛选
+        ├── SummaryCard.vue   # 数据概览卡片
+        ├── DataChart.vue     # ECharts图表
+        ├── DataTable.vue     # 视频列表表格
+        └── ExportButton.vue  # Excel导出按钮
+```
+
+### 数据流向
+
+```
+用户选择平台/时间 → 前端发起请求 → Vite代理转发B站API
+    → 获取原始视频数据 → 时间过滤 → 分类引擎归类
+    → 前端展示（表格+图表） → 用户导出Excel
+```
+
+## 3. 功能设计
+
+### 功能列表
+
+| 功能 | 说明 |
+|------|------|
+| 平台选择 | 支持B站（抖音预留扩展位） |
+| 时间范围 | 近7天 / 近30天 |
+| 数据获取 | 实时从B站API拉取热门视频（最多100条） |
+| 智能分类 | 基于B站分区体系自动归类为6大类 |
+| 数据概览 | 视频总数、总播放量、总点赞、平均互动、最热分类 |
+| 图表展示 | 饼图（类型分布）+ 柱状图（播放量/点赞对比） |
+| 数据表格 | 可排序的视频列表（标题可点击跳转B站） |
+| Excel导出 | 三个工作表：视频列表、分类分析、数据概览 |
+
+### 分类体系
+
+| 大类 | 包含B站分区 |
+|------|------------|
+| 游戏 | 游戏类 |
+| 影视娱乐 | 娱乐、影视、电影、电视剧、番剧、国创 |
+| 知识科技 | 知识、科技、纪录片 |
+| 生活 | 生活、美食、时尚、运动、汽车、动物圈 |
+| 音乐舞蹈 | 音乐、舞蹈 |
+| 动画 | 动画、鬼畜 |
+
+### 交互设计
+- 切换平台/时间 → 点击「获取数据」触发请求
+- 加载中显示按钮loading状态
+- 请求失败弹出错误提示
+- 表格支持多列排序
+- 点击视频标题可跳转至B站原视频页面
+
+## 4. 编译发布
+
+### 环境要求
+- Node.js >= 18.0
+- npm >= 9.0
+
+### 安装步骤
+
+```bash
+# 克隆项目
+git clone <仓库地址>
+cd video-stat
+
+# 安装依赖
+npm install
+```
+
+### 开发模式
+
+```bash
+npm run dev
+# 访问 http://localhost:5173
+```
+
+开发模式下，Vite内置代理会将 `/api/bilibili/*` 请求转发至B站API，无需额外配置。
+
+### 构建部署
+
+```bash
+# 构建前端
+npm run build
+
+# 启动生产服务器（Express + 静态文件）
+npm run server
+# 访问 http://localhost:3000
+```
+
+## 5. 效果展示
+
+### 主界面布局
+1. **顶部标题** — 展示平台名称与功能描述
+2. **筛选面板** — 平台切换 + 时间范围选择 + 数据获取按钮
+3. **数据概览卡片** — 5个指标卡片展示核心数据
+4. **可视化图表** — 饼图（类型分布）+ 柱状图（播放量对比）
+5. **数据表格** — 视频排名、标题、UP主、分类、播放量等字段
+6. **导出按钮** — 一键生成Excel报表
+
+### 导出的Excel内容
+- **视频列表** — 排名、标题、UP主、分区、分类、播放量、点赞、评论、弹幕、分享、发布时间、BV号
+- **分类分析** — 类型、数量、总播放量、总点赞、总评论、总弹幕、平均播放量、播放占比
+- **数据概览** — 平台、时间范围、视频总数、总播放量、最热分类等汇总信息
+
+## 6. 课程知识点映射
+
+本项目完整覆盖了《WEB前端开发》课程的教学内容：
+
+| 知识点 | 应用位置 |
+|--------|---------|
+| HTML/CSS | index.html, 各组件scoped样式 |
+| JavaScript ES6+ | 箭头函数、async/await、解构、模板字符串 |
+| ES Modules | import/export 模块化拆分（api/, utils/, components/） |
+| Node.js | Express服务器、npm依赖管理 |
+| Vite | 项目构建、开发服务器、API代理 |
+| Vue 3 | Composition API、ref/reactive、computed、watch |
+| 组件化 | 6个独立SFC组件、props/emit通信 |
+| 异步数据请求 | Axios + Fetch API 调用B站真实接口 |
+| 响应式设计 | Element Plus 响应式布局、grid自适应 |
+| 第三方库 | Element Plus、ECharts、SheetJS |
+
+---
+
+## 注意事项
+
+- B站API存在请求频率限制，请勿频繁刷新
+- 抖音数据接口暂未开放，已预留扩展接口
+- 导出的Excel文件名包含时间戳，避免覆盖
+- 所有代码为原创，第三方依赖已在package.json中声明
+
+---
+
+**开发时间**：2026年5月  
+**技术栈**：Vue 3 + Vite + Element Plus + ECharts + Node.js
