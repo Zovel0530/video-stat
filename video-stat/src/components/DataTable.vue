@@ -4,6 +4,7 @@ import { formatNumber, formatDateTime } from '../utils/date.js'
 
 const props = defineProps({
   videos: Array,
+  sortBy: String,
 })
 
 const columns = [
@@ -30,6 +31,11 @@ const tableData = computed(() =>
     pubdateFmt: formatDateTime(v.pubdate),
   }))
 )
+
+const defaultSort = computed(() => ({
+  prop: props.sortBy || 'view',
+  order: 'descending',
+}))
 </script>
 
 <template>
@@ -39,7 +45,7 @@ const tableData = computed(() =>
       :data="tableData"
       stripe
       style="width: 100%"
-      :default-sort="{ prop: 'rank', order: 'ascending' }"
+      :default-sort="defaultSort"
       max-height="600"
       size="default"
     >

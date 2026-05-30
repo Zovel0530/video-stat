@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { fetchPopularVideos } from '../api/bilibili.js'
 import { classifyVideo, getCategoryStats, filterByPeriod } from '../utils/classifier.js'
 import FilterPanel from '../components/FilterPanel.vue'
@@ -10,11 +10,19 @@ import ExportButton from '../components/ExportButton.vue'
 
 const platform = ref('bilibili')
 const period = ref('week')
+const sortBy = ref('view')
 const loading = ref(false)
 const videos = ref([])
 const categoryStats = ref([])
 const hasData = ref(false)
 const errorMsg = ref('')
+
+// 按选择的排序依据对视频列表排序（降序）
+const sortedVideos = computed(() => {
+  const list = [...videos.value]
+  list.sort((a, b) => (b[sortBy.value] || 0) - (a[sortBy.value] || 0))
+  return list
+})
 
 async function fetchData() {
   loading.value = true
@@ -63,6 +71,7 @@ async function fetchData() {
     <FilterPanel
       v-model:platform="platform"
       v-model:period="period"
+      v-model:sort-by="sortBy"
       :loading="loading"
       @search="fetchData"
     />
@@ -78,21 +87,21 @@ async function fetchData() {
     />
 
     <template v-if="hasData && !errorMsg">
-      <SummaryCard :videos="videos" :category-stats="categoryStats" />
+      <SummaryCard :videos="sortedVideos" :category-stats="categoryStats" />
       <DataChart :category-stats="categoryStats" />
 
       <div class="export-row">
         <h3 style="margin: 0">数据详情</h3>
         <ExportButton
-          :videos="videos"
+          :videos="sortedVideos"
           :category-stats="categoryStats"
           :period="period"
           :platform="platform"
-          :disabled="!videos.length"
+          :disabled="!sortedVideos.length"
         />
       </div>
 
-      <DataTable :videos="videos" />
+      <DataTable :videos="sortedVideos" :sort-by="sortBy" />
     </template>
 
     <div v-else-if="!loading && !errorMsg" class="empty-state">

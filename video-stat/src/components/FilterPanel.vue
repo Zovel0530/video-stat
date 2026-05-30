@@ -4,10 +4,11 @@ import { Search } from '@element-plus/icons-vue'
 const props = defineProps({
   platform: String,
   period: String,
+  sortBy: String,
   loading: Boolean,
 })
 
-const emit = defineEmits(['update:platform', 'update:period', 'search'])
+const emit = defineEmits(['update:platform', 'update:period', 'update:sortBy', 'search'])
 
 const platforms = [
   { value: 'bilibili', label: 'B站' },
@@ -17,6 +18,12 @@ const platforms = [
 const periods = [
   { value: 'week', label: '近7天' },
   { value: 'month', label: '近30天' },
+]
+
+const sortOptions = [
+  { value: 'view', label: '播放量' },
+  { value: 'like', label: '点赞量' },
+  { value: 'reply', label: '评论量' },
 ]
 </script>
 
@@ -51,6 +58,23 @@ const periods = [
           {{ p.label }}
         </el-radio-button>
       </el-radio-group>
+
+      <el-divider direction="vertical" />
+
+      <span class="filter-label">排序依据</span>
+      <el-select
+        :model-value="sortBy"
+        @update:model-value="emit('update:sortBy', $event)"
+        size="large"
+        style="width: 130px"
+      >
+        <el-option
+          v-for="opt in sortOptions"
+          :key="opt.value"
+          :label="opt.label"
+          :value="opt.value"
+        />
+      </el-select>
     </div>
 
     <el-button
