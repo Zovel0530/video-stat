@@ -46,9 +46,9 @@ const sortOptions = [
         </el-radio-button>
       </el-radio-group>
 
-      <el-divider direction="vertical" />
+      <el-divider direction="vertical" class="filter-divider" />
 
-      <span class="filter-label">时间范围</span>
+      <span class="filter-label">时间</span>
       <el-radio-group
         :model-value="period"
         @update:model-value="emit('update:period', $event)"
@@ -59,14 +59,15 @@ const sortOptions = [
         </el-radio-button>
       </el-radio-group>
 
-      <el-divider direction="vertical" />
+      <el-divider direction="vertical" class="filter-divider" />
 
-      <span class="filter-label">排序依据</span>
+      <span class="filter-label">排序</span>
       <el-select
         :model-value="sortBy"
         @update:model-value="emit('update:sortBy', $event)"
         size="large"
-        style="width: 130px"
+        class="sort-select"
+        popper-class="dark-popper"
       >
         <el-option
           v-for="opt in sortOptions"
@@ -82,6 +83,7 @@ const sortOptions = [
       size="large"
       :loading="loading"
       :icon="Search"
+      class="fetch-btn"
       @click="emit('search')"
     >
       获取数据
@@ -94,22 +96,59 @@ const sortOptions = [
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 18px 24px;
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
 }
+
 .filter-left {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
+
 .filter-label {
-  font-weight: 600;
-  color: #606266;
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--ink-subtle);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.filter-divider {
+  border-color: var(--hairline) !important;
+  margin: 0 4px;
+}
+
+.sort-select {
+  width: 130px;
+}
+
+/* ── CTA 按钮：克制 accent ── */
+.fetch-btn {
+  font-family: var(--font-body) !important;
+  font-weight: 400 !important;
+  letter-spacing: 1px !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 8px 22px !important;
+  background: transparent !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--hairline-strong) !important;
+  transition: all 0.3s var(--ease-out) !important;
+}
+.fetch-btn:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+.fetch-btn:active {
+  transform: translateY(0);
 }
 </style>

@@ -128,35 +128,48 @@ const engageFmt = computed(() => animEngage.value.toFixed(1))
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
+  position: relative;
+  z-index: 1;
 }
 .summary-card {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #409eff;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  border-left: 2px solid var(--hairline-strong);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-left-color 0.3s var(--ease-out);
+  position: relative;
 }
 .summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+  border-left-color: var(--accent);
 }
 .card-icon { font-size: 28px; }
+
 .card-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: #303133;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
 }
 .card-label {
-  font-size: 13px;
-  color: #909399;
-  margin-top: 2px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-subtle);
+  margin-top: 4px;
+  font-weight: 400;
 }
-.card-views { border-left-color: #67c23a; }
-.card-likes { border-left-color: #e6a23c; }
-.card-engage { border-left-color: #f56c6c; }
-.card-top { border-left-color: #e040fb; }
+
+/* 各卡片 accent 色 — 克制单色系 */
+.card-total:hover { border-left-color: var(--accent); }
+.card-views:hover { border-left-color: var(--ink-muted); }
+.card-likes:hover { border-left-color: var(--accent); }
+.card-engage:hover { border-left-color: var(--ink-muted); }
+.card-top:hover { border-left-color: var(--accent); }
 </style>

@@ -102,21 +102,28 @@ const defaultSort = computed(() => ({
 
 <style scoped>
 .table-box {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 .table-title {
   margin: 0 0 16px 0;
-  font-size: 16px;
-  color: #303133;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.3px;
 }
 .video-link {
-  color: #409eff;
+  color: var(--ink);
   text-decoration: none;
+  transition: color 0.2s var(--ease-out);
 }
 .video-link:hover {
+  color: var(--accent);
   text-decoration: underline;
 }
 </style>

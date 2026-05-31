@@ -1,0 +1,98 @@
+/* ═══════════════════════════════════════════════
+   Video-Stat · 高级暗色设计系统
+   克制单色系：黑底 × 暖灰表面 × 单一 champagne accent
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* ── Surface Ladder ── */
+  --canvas: #080808;
+  --surface-1: #0f0f0f;
+  --surface-2: #161616;
+  --surface-3: #1c1c1c;
+
+  /* ── Accent (champagne gold · 唯一的品牌色) ── */
+  --accent: #b8956a;
+  --accent-hover: #c9a87c;
+  --accent-soft: rgba(184, 149, 106, 0.12);
+  --accent-glow: rgba(184, 149, 106, 0.18);
+
+  /* ── Primary (黑白系) ── */
+  --primary: #f5f5f5;
+  --primary-hover: #ffffff;
+  --primary-soft: rgba(255, 255, 255, 0.06);
+
+  /* ── Text ── */
+  --ink: #f5f5f5;
+  --ink-muted: #a0a0a0;
+  --ink-subtle: #6a6a6a;
+  --ink-tertiary: #4a4a4a;
+
+  /* ── Hairline ── */
+  --hairline: #1f1f1f;
+  --hairline-strong: #2e2e2e;
+  --hairline-soft: rgba(255, 255, 255, 0.04);
+
+  /* ── Semantic ── */
+  --success: #3a8f5c;
+  --warning: #c4944a;
+  --error: #c44a4a;
+  --info: #5a80a0;
+
+  /* ── Typography ── */
+  --font-display: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
+  --font-body: 'Inter', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* ── Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 100px;
+  --radius-full: 9999px;
+
+  /* ── Spacing ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+  --space-section: 96px;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-elevated: 0 2px 4px rgba(0,0,0,0.5), 0 8px 16px -4px rgba(0,0,0,0.3);
+  --shadow-glow: 0 0 24px var(--accent-glow);
+
+  /* ── Easing ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background: var(--canvas);
+  color: var(--ink-muted);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-tertiary); }
+
+/* ── Selection ── */
+::selection { background: var(--accent-soft); color: var(--ink); }
