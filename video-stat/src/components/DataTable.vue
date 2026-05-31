@@ -1,10 +1,35 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { gsap } from 'gsap'
 import { formatNumber, formatDateTime } from '../utils/date.js'
 
 const props = defineProps({
   videos: Array,
   sortBy: String,
+})
+
+const container = ref(null)
+let ctx
+
+// 监听数据变化，动画展示表格行
+watch(() => props.videos, async () => {
+  await nextTick()
+  ctx?.revert()
+  if (!container.value) return
+  ctx = gsap.context(() => {
+    // 表格整体一次性淡入（行交错在大量数据时可能卡顿）
+    gsap.from('.el-table__body-wrapper tbody tr', {
+      y: 16,
+      autoAlpha: 0,
+      duration: 0.4,
+      stagger: 0.02,
+      ease: 'power2.out',
+    })
+  }, container.value)
+}, { deep: true })
+
+onUnmounted(() => {
+  ctx?.revert()
 })
 
 const columns = [
@@ -39,7 +64,7 @@ const defaultSort = computed(() => ({
 </script>
 
 <template>
-  <div class="table-box">
+  <div class="table-box" ref="container">
     <h3 class="table-title">热门视频列表 (共 {{ videos.length }} 条)</h3>
     <el-table
       :data="tableData"

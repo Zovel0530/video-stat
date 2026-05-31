@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { gsap } from 'gsap'
 import VChart from 'vue-echarts'
 import { use } from 'echarts/core'
 import { PieChart, BarChart } from 'echarts/charts'
@@ -10,6 +11,25 @@ use([PieChart, BarChart, TitleComponent, TooltipComponent, LegendComponent, Grid
 
 const props = defineProps({
   categoryStats: Array,
+})
+
+const container = ref(null)
+let ctx
+
+onMounted(() => {
+  if (!container.value) return
+  ctx = gsap.context(() => {
+    // 图表盒子悬停微动效通过 CSS transition 处理，这里只做入场后的增强
+    gsap.from('.chart-box', {
+      scale: 0.98,
+      duration: 0.5,
+      ease: 'power2.out',
+    })
+  }, container.value)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
 })
 
 const pieOption = computed(() => ({
@@ -72,7 +92,7 @@ const barOption = computed(() => ({
 </script>
 
 <template>
-  <div class="chart-row" v-if="categoryStats.length">
+  <div class="chart-row" ref="container">
     <div class="chart-box">
       <v-chart :option="pieOption" autoresize style="height: 360px" />
     </div>
@@ -93,5 +113,10 @@ const barOption = computed(() => ({
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   padding: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.chart-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 </style>

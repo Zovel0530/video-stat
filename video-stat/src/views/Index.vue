@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { gsap } from 'gsap'
 import { fetchPopularVideos } from '../api/bilibili.js'
 import { classifyVideo, getCategoryStats, filterByPeriod } from '../utils/classifier.js'
 import FilterPanel from '../components/FilterPanel.vue'
@@ -17,11 +18,84 @@ const categoryStats = ref([])
 const hasData = ref(false)
 const errorMsg = ref('')
 
+// 页面根元素
+const pageRef = ref(null)
+let pageCtx
+
 // 按选择的排序依据对视频列表排序（降序）
 const sortedVideos = computed(() => {
   const list = [...videos.value]
   list.sort((a, b) => (b[sortBy.value] || 0) - (a[sortBy.value] || 0))
   return list
+})
+
+// 页面首次加载动画
+onMounted(() => {
+  pageCtx = gsap.context(() => {
+    // Header 从上方滑入
+    gsap.from('.app-header', {
+      y: -40,
+      autoAlpha: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+    })
+    // FilterPanel 延迟淡入
+    gsap.from('.filter-panel', {
+      y: 20,
+      autoAlpha: 0,
+      duration: 0.6,
+      delay: 0.2,
+      ease: 'power2.out',
+    })
+    // 空状态弹性入场
+    gsap.from('.empty-state', {
+      scale: 0.9,
+      autoAlpha: 0,
+      duration: 0.7,
+      delay: 0.3,
+      ease: 'back.out(1.4)',
+    })
+  }, pageRef.value)
+})
+
+onUnmounted(() => {
+  pageCtx?.revert()
+})
+
+// 数据加载后，动画展示结果区域
+watch(hasData, async (val) => {
+  if (!val) return
+  await nextTick()
+  // 清理页面初始 context，为数据区动画创建新 context
+  pageCtx?.revert()
+  pageCtx = gsap.context(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+    // 概览卡片依次弹出
+    tl.from('.summary-row .summary-card', {
+      y: 30,
+      autoAlpha: 0,
+      scale: 0.95,
+      duration: 0.5,
+      stagger: 0.08,
+    })
+    // 图表区域淡入
+    tl.from('.chart-row', {
+      y: 24,
+      autoAlpha: 0,
+      duration: 0.6,
+    }, '-=0.2')
+    // 导出栏 & 表格
+    tl.from('.export-row', {
+      y: 16,
+      autoAlpha: 0,
+      duration: 0.4,
+    }, '-=0.2')
+    tl.from('.table-box', {
+      y: 20,
+      autoAlpha: 0,
+      duration: 0.5,
+    }, '-=0.1')
+  }, pageRef.value)
 })
 
 async function fetchData() {
@@ -62,7 +136,7 @@ async function fetchData() {
 </script>
 
 <template>
-  <div class="home">
+  <div class="home" ref="pageRef">
     <header class="app-header">
       <h1>短视频趋势分析</h1>
       <p class="subtitle">B站热门视频排行榜 · 类型分析与数据导出</p>
