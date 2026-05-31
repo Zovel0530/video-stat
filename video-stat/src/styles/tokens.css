@@ -143,7 +143,31 @@ body {
   background: var(--canvas);
   color: var(--ink-muted);
   -webkit-font-smoothing: antialiased;
+  /* 防止点击非输入区域时出现文本光标/插入符 */
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
   transition: background-color var(--duration-slow) var(--ease-out), color var(--duration-slow) var(--ease-out);
+}
+
+/* ── 允许文本选中的区域 ── */
+p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, .header-desc, .section-heading {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+
+/* 按钮、输入框等交互元素保持不可选中 */
+button, input, select, .toggle-btn, .fetch-btn, .el-radio-button, .el-select {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+/* 隐藏 Element Plus select 内部隐藏 input 的插入符 */
+.el-select .el-input__inner {
+  caret-color: transparent !important;
+  cursor: pointer !important;
 }
 
 /* ── Scrollbar ── */
