@@ -1,25 +1,17 @@
 <script setup>
 import { Search } from '@element-plus/icons-vue'
 
-const props = defineProps({
-  platform: String,
-  period: String,
-  sortBy: String,
-  loading: Boolean,
-})
-
+const props = defineProps({ platform: String, period: String, sortBy: String, loading: Boolean })
 const emit = defineEmits(['update:platform', 'update:period', 'update:sortBy', 'search'])
 
 const platforms = [
   { value: 'bilibili', label: 'B站' },
-  { value: 'douyin', label: '抖音 (开发中)', disabled: true },
+  { value: 'douyin', label: '抖音', disabled: true },
 ]
-
 const periods = [
   { value: 'week', label: '近7天' },
   { value: 'month', label: '近30天' },
 ]
-
 const sortOptions = [
   { value: 'view', label: '播放量' },
   { value: 'like', label: '点赞量' },
@@ -30,64 +22,23 @@ const sortOptions = [
 <template>
   <div class="filter-panel">
     <div class="filter-left">
-      <span class="filter-label">平台</span>
-      <el-radio-group
-        :model-value="platform"
-        @update:model-value="emit('update:platform', $event)"
-        size="large"
-      >
-        <el-radio-button
-          v-for="p in platforms"
-          :key="p.value"
-          :value="p.value"
-          :disabled="p.disabled"
-        >
-          {{ p.label }}
-        </el-radio-button>
+      <el-radio-group :model-value="platform" @update:model-value="emit('update:platform', $event)" size="large">
+        <el-radio-button v-for="p in platforms" :key="p.value" :value="p.value" :disabled="p.disabled">{{ p.label }}</el-radio-button>
       </el-radio-group>
-
-      <el-divider direction="vertical" class="filter-divider" />
-
-      <span class="filter-label">时间</span>
-      <el-radio-group
-        :model-value="period"
-        @update:model-value="emit('update:period', $event)"
-        size="large"
-      >
-        <el-radio-button v-for="p in periods" :key="p.value" :value="p.value">
-          {{ p.label }}
-        </el-radio-button>
+      <span class="sep"></span>
+      <el-radio-group :model-value="period" @update:model-value="emit('update:period', $event)" size="large">
+        <el-radio-button v-for="p in periods" :key="p.value" :value="p.value">{{ p.label }}</el-radio-button>
       </el-radio-group>
-
-      <el-divider direction="vertical" class="filter-divider" />
-
-      <span class="filter-label">排序</span>
-      <el-select
-        :model-value="sortBy"
-        @update:model-value="emit('update:sortBy', $event)"
-        size="large"
-        class="sort-select"
-        popper-class="dark-popper"
-      >
-        <el-option
-          v-for="opt in sortOptions"
-          :key="opt.value"
-          :label="opt.label"
-          :value="opt.value"
-        />
+      <span class="sep"></span>
+      <el-select :model-value="sortBy" @update:model-value="emit('update:sortBy', $event)" size="large" class="sort-select" popper-class="dark-popper">
+        <el-option v-for="opt in sortOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
       </el-select>
     </div>
-
-    <el-button
-      type="primary"
-      size="large"
-      :loading="loading"
-      :icon="Search"
-      class="fetch-btn"
-      @click="emit('search')"
-    >
-      获取数据
-    </el-button>
+    <button class="fetch-btn" :disabled="loading" @click="emit('search')">
+      <span v-if="loading" class="btn-spinner"></span>
+      <Search v-else class="btn-icon" />
+      {{ loading ? '获取中' : '获取数据' }}
+    </button>
   </div>
 </template>
 
@@ -96,59 +47,42 @@ const sortOptions = [
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
-  background: var(--surface-1);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--hairline);
   flex-wrap: wrap;
-  gap: 14px;
-  position: relative;
-  z-index: 1;
+  gap: 16px;
+  padding: 16px 0;
 }
+.filter-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sep { width: 1px; height: 20px; background: var(--hairline); margin: 0 4px; }
+.sort-select { width: 120px; }
 
-.filter-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-label {
-  font-family: var(--font-body);
-  font-weight: 500;
-  color: var(--ink-subtle);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-.filter-divider {
-  border-color: var(--hairline) !important;
-  margin: 0 4px;
-}
-
-.sort-select {
-  width: 130px;
-}
-
-/* ── CTA 按钮：克制 accent ── */
+/* ── 浅蓝 pill 按钮 ── */
 .fetch-btn {
-  font-family: var(--font-body) !important;
-  font-weight: 400 !important;
-  letter-spacing: 1px !important;
-  border-radius: var(--radius-pill) !important;
-  padding: 8px 22px !important;
-  background: transparent !important;
-  color: var(--ink) !important;
-  border: 1px solid var(--hairline-strong) !important;
-  transition: all 0.3s var(--ease-out) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 22px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background var(--duration) var(--ease-out), box-shadow var(--duration) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
 }
-.fetch-btn:hover {
-  border-color: var(--accent) !important;
-  color: var(--accent) !important;
-  transform: translateY(-1px);
+.fetch-btn:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); }
+.fetch-btn:active { transform: scale(0.97); }
+.fetch-btn:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
+.btn-icon { width: 16px; height: 16px; }
+.btn-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
 }
-.fetch-btn:active {
-  transform: translateY(0);
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

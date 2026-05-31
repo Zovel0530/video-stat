@@ -36,18 +36,20 @@ function handleExport() {
 <style scoped>
 .export-btn {
   font-family: var(--font-body) !important;
-  font-weight: 400 !important;
-  letter-spacing: 1px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
   border-radius: var(--radius-pill) !important;
   padding: 8px 20px !important;
   background: transparent !important;
   color: var(--ink-muted) !important;
   border: 1px solid var(--hairline) !important;
-  transition: all 0.3s var(--ease-out) !important;
+  transition: all var(--duration) var(--ease-out) !important;
 }
 .export-btn:hover {
   color: var(--accent) !important;
   border-color: var(--accent) !important;
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow) !important;
 }
+.export-btn:active { transform: scale(0.97) !important; }
 </style>

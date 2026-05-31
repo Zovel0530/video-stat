@@ -1,57 +1,56 @@
 /* ═══════════════════════════════════════════════
-   Video-Stat · 高级暗色设计系统
-   克制单色系：黑底 × 暖灰表面 × 单一 champagne accent
+   Video-Stat · 高级浅蓝设计系统
+
+   Apple   → 纯白画布 · SF 排版 · 毛玻璃 · 11px 圆角
+   Tesla   → 激进减法 · 单一 Electric Blue · zero-shadow
+   Starbucks → 50px pill · scale 按压 · 克制 accent
    ═══════════════════════════════════════════════ */
 
 :root {
-  /* ── Surface Ladder ── */
-  --canvas: #080808;
-  --surface-1: #0f0f0f;
-  --surface-2: #161616;
-  --surface-3: #1c1c1c;
+  /* ── Surface (Apple 纯白体系) ── */
+  --canvas: #ffffff;
+  --surface-1: #f5f5f7;
+  --surface-2: #fafafa;
+  --surface-3: #eeeeee;
 
-  /* ── Accent (champagne gold · 唯一的品牌色) ── */
-  --accent: #b8956a;
-  --accent-hover: #c9a87c;
-  --accent-soft: rgba(184, 149, 106, 0.12);
-  --accent-glow: rgba(184, 149, 106, 0.18);
+  /* ── Accent (Tesla Electric Blue × Apple Action Blue) ── */
+  --accent: #4488f0;
+  --accent-hover: #3377e4;
+  --accent-soft: rgba(68, 136, 240, 0.08);
+  --accent-glow: rgba(68, 136, 240, 0.18);
 
-  /* ── Primary (黑白系) ── */
-  --primary: #f5f5f5;
-  --primary-hover: #ffffff;
-  --primary-soft: rgba(255, 255, 255, 0.06);
+  /* ── Text (Apple 深色体系) ── */
+  --ink: #1d1d1f;
+  --ink-muted: #4d4d4f;
+  --ink-subtle: #86868b;
+  --ink-tertiary: #aeaeb2;
 
-  /* ── Text ── */
-  --ink: #f5f5f5;
-  --ink-muted: #a0a0a0;
-  --ink-subtle: #6a6a6a;
-  --ink-tertiary: #4a4a4a;
-
-  /* ── Hairline ── */
-  --hairline: #1f1f1f;
-  --hairline-strong: #2e2e2e;
-  --hairline-soft: rgba(255, 255, 255, 0.04);
+  /* ── Hairline (Apple 极细) ── */
+  --hairline: #e0e0e0;
+  --hairline-strong: #c8c8cc;
+  --hairline-soft: rgba(0, 0, 0, 0.04);
 
   /* ── Semantic ── */
-  --success: #3a8f5c;
-  --warning: #c4944a;
-  --error: #c44a4a;
-  --info: #5a80a0;
+  --success: #34c759;
+  --warning: #ff9500;
+  --error: #ff3b30;
+  --info: #4488f0;
 
-  /* ── Typography ── */
+  /* ── Typography (Apple SF Pro 体系) ── */
   --font-display: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
   --font-body: 'Inter', 'SF Pro Text', -apple-system, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
 
   /* ── Radius ── */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-pill: 100px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 11px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 50px;
   --radius-full: 9999px;
 
-  /* ── Spacing ── */
+  /* ── Spacing (Apple generous) ── */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -59,19 +58,75 @@
   --space-xl: 24px;
   --space-2xl: 32px;
   --space-3xl: 48px;
-  --space-section: 96px;
+  --space-section: 80px;
 
-  /* ── Shadows ── */
-  --shadow-card: 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-elevated: 0 2px 4px rgba(0,0,0,0.5), 0 8px 16px -4px rgba(0,0,0,0.3);
-  --shadow-glow: 0 0 24px var(--accent-glow);
+  /* ── Shadows (Apple 极柔 · Tesla 原则近零) ── */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-glow: 0 0 16px rgba(68, 136, 240, 0.20);
 
-  /* ── Easing ── */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 300ms;
-  --duration-slow: 500ms;
+  /* ── Landing page glow ── */
+  --landing-glow-1: rgba(68, 136, 240, 0.05);
+  --landing-glow-2: rgba(68, 136, 240, 0.03);
+
+  /* ── Transitions (Tesla 0.33s) ── */
+  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration: 0.33s;
+  --duration-fast: 0.18s;
+  --duration-slow: 0.45s;
+}
+
+/* ═══════════════════════════════════════════════
+   暗夜模式 · 低调奢华 (Understated Luxury)
+
+   Bugatti      → 极致克制 · 无 accent · 微步表面 · 摄影深度
+   Ferrari      → 暖黑画布 · 单 accent 吝啬用 · 0px 尖角
+   Lamborghini  → 真黑深渊 · 金 accent 仅 CTA · 黑暗即留白
+   ═══════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  /* ── Surface (Bugatti 微步阶梯 — 差几乎不可察) ── */
+  --canvas: #0a0a0b;
+  --surface-1: #111113;
+  --surface-2: #17181a;
+  --surface-3: #1e1f22;
+
+  /* ── Accent (低调香槟金 — 忌鲜艳，吝啬用) ── */
+  --accent: #b89764;
+  --accent-hover: #c9ad80;
+  --accent-soft: rgba(184, 151, 100, 0.07);
+  --accent-glow: rgba(184, 151, 100, 0.14);
+
+  /* ── Text (暖白体系 — 忌冷白) ── */
+  --ink: #e8e4df;
+  --ink-muted: #a09b95;
+  --ink-subtle: #78736e;
+  --ink-tertiary: #55524e;
+
+  /* ── Hairline (微不可察 — Bugatti 级克制) ── */
+  --hairline: #1e1f23;
+  --hairline-strong: #2a2b30;
+  --hairline-soft: rgba(255, 255, 255, 0.025);
+
+  /* ── Semantic (柔和暗色版) ── */
+  --success: #4a9b5e;
+  --warning: #c4944a;
+  --error: #c2544a;
+  --info: #b89764;
+
+  /* ── Shadows (Ferrari 原则：靠亮度分层，不靠阴影) ── */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-modal: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 16px rgba(184, 151, 100, 0.10);
+
+  /* ── Landing glow (暗色下极弱) ── */
+  --landing-glow-1: rgba(184, 151, 100, 0.04);
+  --landing-glow-2: rgba(184, 151, 100, 0.025);
+
+  /* ── 浏览器原生暗色控件 ── */
+  color-scheme: dark;
 }
 
 /* ── Reset ── */
@@ -81,18 +136,23 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
   background: var(--canvas);
   color: var(--ink-muted);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
+  transition: background-color var(--duration-slow) var(--ease-out), color var(--duration-slow) var(--ease-out);
 }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-tertiary); }
 
 /* ── Selection ── */
 ::selection { background: var(--accent-soft); color: var(--ink); }
+
+/* ── Focus ── */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-xs); }

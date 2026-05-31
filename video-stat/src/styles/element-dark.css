@@ -1,140 +1,204 @@
 /* ═══════════════════════════════════════════════
-   Element Plus 暗色主题覆盖
-   适配 Video-Stat 融合设计系统
+   Element Plus — 高级浅蓝覆盖
    ═══════════════════════════════════════════════ */
 
 /* ── Radio Button ── */
 .el-radio-button__inner {
-  background: var(--surface-2) !important;
+  background: var(--canvas) !important;
   border-color: var(--hairline) !important;
   color: var(--ink-muted) !important;
   font-family: var(--font-body) !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
-  transition: all 0.2s var(--ease-out) !important;
+  transition: all var(--duration) var(--ease-out) !important;
 }
 .el-radio-button__original-radio:checked + .el-radio-button__inner {
-  background: var(--ink) !important;
-  border-color: var(--hairline-strong) !important;
-  color: var(--canvas) !important;
-  box-shadow: none !important;
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-glow) !important;
 }
 .el-radio-button:first-child .el-radio-button__inner {
-  border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill) !important;
 }
 .el-radio-button:last-child .el-radio-button__inner {
-  border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0 !important;
 }
-.el-radio-button__inner:hover {
-  color: var(--ink) !important;
-}
+.el-radio-button__inner:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
 
-/* ── Select Dropdown ── */
+/* ── Select ── */
 .el-select .el-input__wrapper {
-  background: var(--surface-2) !important;
+  background: var(--canvas) !important;
   border-color: var(--hairline) !important;
-  border-radius: var(--radius-md) !important;
+  border-radius: var(--radius-pill) !important;
   box-shadow: none !important;
+  transition: border-color var(--duration) var(--ease-out) !important;
 }
-.el-select .el-input__inner {
-  color: var(--ink) !important;
-  font-family: var(--font-body) !important;
-}
+.el-select .el-input__wrapper:hover { border-color: var(--accent) !important; }
+.el-select .el-input__inner { color: var(--ink) !important; font-family: var(--font-body) !important; font-size: 14px !important; }
 .el-select-dropdown {
-  background: var(--surface-2) !important;
-  border: 1px solid var(--hairline-strong) !important;
+  background: var(--canvas) !important;
+  border: 1px solid var(--hairline) !important;
   border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-modal) !important;
+  padding: 6px !important;
 }
 .el-select-dropdown__item {
   color: var(--ink-muted) !important;
   font-family: var(--font-body) !important;
-  transition: all 0.15s var(--ease-out) !important;
+  font-size: 14px !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all var(--duration-fast) var(--ease-out) !important;
 }
 .el-select-dropdown__item.hover,
-.el-select-dropdown__item:hover {
-  background: var(--surface-3) !important;
-  color: var(--ink) !important;
-}
-.el-select-dropdown__item.selected {
-  color: var(--primary-hover) !important;
-  font-weight: 600 !important;
-}
+.el-select-dropdown__item:hover { background: var(--surface-1) !important; color: var(--ink) !important; }
+.el-select-dropdown__item.selected { color: var(--accent) !important; font-weight: 600 !important; }
 
 /* ── Table ── */
 .el-table {
   --el-table-bg-color: transparent !important;
   --el-table-tr-bg-color: transparent !important;
-  --el-table-header-bg-color: var(--surface-2) !important;
-  --el-table-row-hover-bg-color: var(--surface-3) !important;
+  --el-table-header-bg-color: transparent !important;
+  --el-table-row-hover-bg-color: var(--surface-1) !important;
   --el-table-border-color: var(--hairline) !important;
   --el-table-text-color: var(--ink-muted) !important;
   --el-table-header-text-color: var(--ink-subtle) !important;
   color: var(--ink-muted) !important;
   font-family: var(--font-body) !important;
+  font-size: 14px !important;
 }
 .el-table th.el-table__cell {
-  background: var(--surface-2) !important;
-  font-family: var(--font-mono) !important;
+  background: transparent !important;
+  font-family: var(--font-body) !important;
   font-size: 12px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.3px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
   text-transform: uppercase !important;
   color: var(--ink-subtle) !important;
-  border-bottom: 1px solid var(--hairline-strong) !important;
+  border-bottom: 1px solid var(--hairline) !important;
+  padding: 14px 0 !important;
 }
 .el-table td.el-table__cell {
-  border-bottom: 1px solid var(--hairline) !important;
+  border-bottom: 1px solid var(--hairline-soft) !important;
   color: var(--ink-muted) !important;
+  padding: 12px 0 !important;
 }
-.el-table .el-table__row:hover > td {
-  background: var(--surface-3) !important;
-}
-.el-table--striped .el-table__body tr.el-table__row--striped td {
-  background: rgba(255,255,255,0.015) !important;
-}
+.el-table .el-table__row:hover > td { background: var(--surface-1) !important; }
+.el-table__inner-wrapper::before { display: none !important; }
 
 /* ── Tag ── */
 .el-tag--primary {
   background: var(--accent-soft) !important;
-  border-color: rgba(184, 149, 106, 0.25) !important;
+  border: 1px solid var(--accent-glow) !important;
   color: var(--accent) !important;
-  border-radius: var(--radius-sm) !important;
+  border-radius: var(--radius-pill) !important;
   font-family: var(--font-body) !important;
+  font-size: 12px !important;
   font-weight: 500 !important;
+  padding: 2px 10px !important;
 }
 
 /* ── Alert ── */
 .el-alert--error {
-  background: rgba(234, 34, 97, 0.1) !important;
-  border: 1px solid rgba(234, 34, 97, 0.25) !important;
   border-radius: var(--radius-md) !important;
 }
 
-/* ── Button (Element Plus base) ── */
+/* ── Button ── */
 .el-button--large {
   font-family: var(--font-body) !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
-}
-
-/* ── Pagination (if used) ── */
-.el-pagination button,
-.el-pager li {
-  background: var(--surface-2) !important;
-  color: var(--ink-muted) !important;
-  border-color: var(--hairline) !important;
-}
-.el-pager li.is-active {
-  background: var(--ink) !important;
-  color: var(--canvas) !important;
-}
-
-/* ── Alert ── */
-.el-alert--error {
-  background: rgba(196, 74, 74, 0.08) !important;
-  border: 1px solid rgba(196, 74, 74, 0.2) !important;
-  border-radius: var(--radius-md) !important;
+  transition: all var(--duration) var(--ease-out) !important;
 }
 
 /* ── Loading ── */
-.el-loading-spinner .circular circle {
-  stroke: var(--accent) !important;
+.el-loading-spinner .circular circle { stroke: var(--accent) !important; }
+
+/* ═══════════════════════════════════════════════
+   暗夜模式 · Element Plus 覆盖
+   ═══════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  /* ── Radio Button ── */
+  .el-radio-button__inner {
+    background: var(--surface-2) !important;
+    border-color: var(--hairline) !important;
+    color: var(--ink-muted) !important;
+  }
+  .el-radio-button__original-radio:checked + .el-radio-button__inner {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+    box-shadow: var(--shadow-glow) !important;
+  }
+  .el-radio-button__inner:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+
+  /* ── Select ── */
+  .el-select .el-input__wrapper {
+    background: var(--surface-2) !important;
+    border-color: var(--hairline) !important;
+    box-shadow: none !important;
+  }
+  .el-select .el-input__wrapper:hover { border-color: var(--accent) !important; }
+  .el-select .el-input__inner { color: var(--ink) !important; }
+  .el-select-dropdown {
+    background: var(--surface-2) !important;
+    border-color: var(--hairline) !important;
+    box-shadow: var(--shadow-modal) !important;
+  }
+  .el-select-dropdown__item {
+    color: var(--ink-muted) !important;
+  }
+  .el-select-dropdown__item.hover,
+  .el-select-dropdown__item:hover { background: var(--surface-3) !important; color: var(--ink) !important; }
+  .el-select-dropdown__item.selected { color: var(--accent) !important; }
+
+  /* ── Table ── */
+  .el-table {
+    --el-table-bg-color: transparent !important;
+    --el-table-tr-bg-color: transparent !important;
+    --el-table-header-bg-color: transparent !important;
+    --el-table-row-hover-bg-color: var(--surface-2) !important;
+    --el-table-border-color: var(--hairline) !important;
+    --el-table-text-color: var(--ink-muted) !important;
+    --el-table-header-text-color: var(--ink-subtle) !important;
+    color: var(--ink-muted) !important;
+  }
+  .el-table th.el-table__cell {
+    color: var(--ink-subtle) !important;
+    border-bottom-color: var(--hairline) !important;
+  }
+  .el-table td.el-table__cell {
+    border-bottom-color: var(--hairline-soft) !important;
+    color: var(--ink-muted) !important;
+  }
+  .el-table .el-table__row:hover > td { background: var(--surface-2) !important; }
+  .el-table--striped .el-table__body tr.el-table__row--striped td { background: var(--surface-1) !important; }
+
+  /* ── Tag ── */
+  .el-tag--primary {
+    background: var(--accent-soft) !important;
+    border-color: var(--accent-glow) !important;
+    color: var(--accent) !important;
+  }
+
+  /* ── Alert ── */
+  .el-alert--error {
+    background: rgba(255, 69, 58, 0.12) !important;
+    border-color: rgba(255, 69, 58, 0.25) !important;
+    color: #ff6961 !important;
+  }
+
+  /* ── Popper / Dropdown ── */
+  .el-popper.is-dark {
+    background: var(--surface-2) !important;
+    border: 1px solid var(--hairline) !important;
+    color: var(--ink-muted) !important;
+  }
+
+  /* ── Tooltip ── */
+  .el-tooltip__popper.is-dark {
+    background: var(--surface-3) !important;
+    color: var(--ink) !important;
+  }
 }
