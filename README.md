@@ -1,208 +1,139 @@
-# 短视频趋势分析 / Video Trend Analytics
+# 短视频趋势分析
 
-> B站热门视频排行榜 · 智能分类 · 数据可视化 · 一键导出报表
+> 获取 B站热门视频，自动分类，可视化对比，一键导出 Excel
 
 [![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?logo=vue.js)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?logo=vite)](https://vite.dev/)
-[![Element Plus](https://img.shields.io/badge/Element_Plus-2.14-409EFF?logo=element)](https://element-plus.org/)
-[![ECharts](https://img.shields.io/badge/ECharts-6.1-AA344D)](https://echarts.apache.org/)
-[![GSAP](https://img.shields.io/badge/GSAP-3.15-88CE02?logo=greensock)](https://gsap.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-LTS-339933?logo=node.js)](https://nodejs.org/)
 
 ---
 
-## 目录
+## 1. 这是什么项目
 
-- [1. 项目目的](#1-项目目的)
-- [2. 技术架构](#2-技术架构)
-- [3. 功能设计](#3-功能设计)
-- [4. 编译发布](#4-编译发布)
-- [5. 效果展示](#5-效果展示)
-- [6. 开发过程](#6-开发过程)
-- [7. 挑战与解决方案](#7-挑战与解决方案)
-- [8. 未来改进计划](#8-未来改进计划)
+### 1.1 背景
 
----
+B站的热门排行榜按综合热度排序，但它不做三件事：
 
-## 1. 项目目的
+- 不把视频按内容类型分类
+- 不提供不同类别之间的数据对比
+- 不允许导出数据做进一步分析
 
-### 1.1 项目背景
+这个项目解决的就是这三个问题。
 
-在日常学习和生活中，我们经常浏览B站（Bilibili）的热门视频来获取热点信息和娱乐内容。然而，B站官方的热门排行榜**缺乏对视频内容的自动分类、多维度数据对比和一键数据导出能力**，用户难以快速了解不同内容类型的分布趋势和播放表现。
+### 1.2 它做了什么
 
-### 1.2 解决的问题
+| 原来的问题 | 这个项目怎么解决 |
+|-----------|----------------|
+| 排行榜混在一起，看不出类型分布 | 把 B站 20+ 个分区归为 6 个大类，分别统计 |
+| 只有排名，没有对比 | 用饼图看分布，用柱状图对比各类别的播放量和点赞量 |
+| 数据拿不出来 | 一键导出 Excel，包含视频明细、分类汇总和概览三个 Sheet |
+| 过了时间的数据找不到 | 支持按近 7 天 / 近 30 天筛选，调用 B站公开 API 实时获取 |
+| 界面像工具页，不像产品 | 做了两套配色（白日/暗夜），可一键切换 |
 
-| 痛点 | 本项目解决方案 |
-|------|---------------|
-| 热门视频无法按类型分组统计 | 智能分类引擎：将B站20+分区自动归类为6大内容类别 |
-| 视频数据缺乏可视化分析 | ECharts 交互图表：饼图 + 柱状图，直观呈现分类分布与播放对比 |
-| 无法导出数据进行二次分析 | 一键导出 Excel：3 Sheet 完整报表（视频列表 / 分类分析 / 数据概览） |
-| 排行榜数据时效性差 | 实时调用 B站官方 API，支持近7天 / 近30天筛选 |
-| 界面单调、缺乏品质感 | Apple × Tesla × Ferrari 多品牌设计融合，双主题（白日/暗夜）可切换 |
+### 1.3 谁适合用
 
-### 1.3 应用场景
+- **内容创作者**：看哪个类型的视频最近流量好，辅助选题
+- **运营**：快速了解平台上不同内容类型的表现
+- **普通用户**：按分类浏览热门视频，不用自己在排行榜里翻
 
-- **内容创作者**：分析热门视频的类型和趋势，辅助选题决策
-- **数据分析爱好者**：快速获取结构化视频数据，进行二次分析
-- **运营人员**：监控热门内容分布，了解平台内容生态
-- **普通用户**：浏览排行榜，按分类筛选感兴趣的视频
+### 1.4 和类似项目的区别
 
-### 1.4 创新点
-
-1. **双主题设计系统**：基于 6 个国际顶级品牌（Apple、Tesla、Starbucks、Bugatti、Ferrari、Lamborghini）的设计基因，打造白日模式（清新专业）与暗夜模式（低调奢华）两套完整视觉方案
-2. **GSAP 全链路动画**：从 Landing Page 入场 → 数据卡片数字滚动 → 图表渲染 → 主题切换图标变形，动画覆盖每一步用户操作
-3. **智能分类引擎**：将 B站 20+ 原始分区映射为 6 大内容类别，支持多维度聚合统计
-4. **零外部依赖的 Excel 导出**：使用 xlsx 库生成 3 Sheet 结构化报表，列宽自适应
+1. 内置了分类引擎，不需要手动打标签
+2. 图表配色跟随主题自动切换
+3. Landing Page 到数据面板的过渡有完整动画链路
+4. Excel 导出不是简单的 CSV，是三 Sheet 的结构化报表
 
 ---
 
-## 2. 技术架构
+## 2. 技术方案
 
-### 2.1 技术栈
+### 2.1 用了什么
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     用户界面层                            │
-│   Vue 3 (Composition API)  ·  Element Plus  ·  ECharts   │
-│   GSAP (动画)  ·  CSS Custom Properties (主题系统)         │
-├─────────────────────────────────────────────────────────┤
-│                     业务逻辑层                            │
-│   视频分类引擎  ·  数据过滤排序  ·  Excel 导出             │
-├─────────────────────────────────────────────────────────┤
-│                     数据服务层                            │
-│   Axios (HTTP)  ·  Bilibili API  ·  Express (生产服务)     │
-├─────────────────────────────────────────────────────────┤
-│                     构建部署层                            │
-│   Vite 8 (构建)  ·  Node.js (运行)  ·  Git (版本管理)      │
-└─────────────────────────────────────────────────────────┘
-```
+| 类别 | 选型 | 用它做什么 |
+|------|------|-----------|
+| 前端框架 | Vue 3.5 (Composition API) | 组件化，所有状态用 ref/computed 管理 |
+| 构建 | Vite 8 | 开发和打包 |
+| UI 库 | Element Plus 2.14 | 单选组、下拉框、表格、标签、提示 |
+| 图表 | ECharts 6.1 + vue-echarts | 饼图、柱状图，option 随主题变化 |
+| 动画 | GSAP 3.15 | 页面入场、数字滚动、图标变形 |
+| HTTP | Axios 1.16 | 调 B站 API，统一错误处理 |
+| Excel | xlsx 0.18 | 前端直接生成 xlsx 文件下载 |
+| 样式 | CSS Custom Properties | 主题变量一把切，不用重新编译 |
+| 后端 | Express 4.21 | 生产环境代理 API 请求 |
 
-| 类别 | 技术 | 用途 |
-|------|------|------|
-| **前端框架** | Vue 3.5 (Composition API + `<script setup>`) | 组件化开发、响应式数据管理 |
-| **构建工具** | Vite 8 | 开发服务器、生产构建 |
-| **UI 组件库** | Element Plus 2.14 | Radio Button、Select、Table、Tag、Alert |
-| **数据可视化** | ECharts 6.1 + vue-echarts | 饼图（分类分布）、柱状图（播放对比） |
-| **动画引擎** | GSAP 3.15 | Landing Page 入场、数字滚动、图表过渡、主题切换动画 |
-| **HTTP 客户端** | Axios 1.16 | 请求 B站 API、错误拦截 |
-| **数据处理** | xlsx 0.18 | Excel 报表生成与导出 |
-| **后端服务** | Express 4.21 | 生产环境 API 代理（CORS 解决） |
-| **样式方案** | CSS Custom Properties | 双主题无缝切换、零 FOUC |
-| **版本管理** | Git + Gitee | 代码版本控制 |
-
-### 2.2 项目结构
+### 2.2 代码怎么组织的
 
 ```
 video-stat/
-├── index.html                    # 入口 HTML
-├── package.json                  # 依赖与脚本配置
-├── vite.config.js                # Vite 构建配置
+├── index.html
+├── package.json
+├── vite.config.js
 ├── server/
-│   └── index.js                  # Express API 代理服务器
+│   └── index.js              # 生产环境 Express
 └── src/
-    ├── main.js                   # 应用入口 · FOUC 防护 · Element Plus 注册
-    ├── App.vue                   # 根组件 · Landing Page ↔ 主页切换
+    ├── main.js               # 入口，挂载前同步设主题防闪烁
+    ├── App.vue               # 根组件，控制 Landing Page ↔ 主页切换
     ├── api/
-    │   ├── request.js            # Axios 实例 · 拦截器 · 错误处理
-    │   └── bilibili.js           # B站 API 封装 · 热门视频 / 视频详情
+    │   ├── request.js         # Axios 实例 + 拦截器
+    │   └── bilibili.js        # B站 API：热门列表、视频详情
     ├── utils/
-    │   ├── classifier.js         # 视频分类引擎 · 分区映射 · 聚合统计
-    │   ├── date.js               # 数字格式化 · 日期工具
-    │   └── excel.js              # Excel 报表生成 · 多 Sheet 导出
+    │   ├── classifier.js      # 分类引擎：分区→大类映射 + 聚合统计
+    │   ├── date.js            # 数字格式化
+    │   └── excel.js           # 生成三 Sheet Excel 并下载
     ├── composables/
-    │   └── useTheme.js           # 单例主题状态管理 · localStorage 持久化
+    │   └── useTheme.js        # 主题状态单例，localStorage 持久化
     ├── styles/
-    │   ├── tokens.css            # 设计 Token · 双主题变量 · 全局样式
-    │   └── element-dark.css      # Element Plus 主题覆盖
+    │   ├── tokens.css         # 100+ 个 CSS 变量，两套色值
+    │   └── element-dark.css   # Element Plus 的主题适配
     ├── views/
-    │   ├── LandingPage.vue       # Landing Page · 品牌展示 · GSAP 入场动画
-    │   └── Index.vue             # 功能主页 · 数据面板 · 筛选与图表
+    │   ├── LandingPage.vue    # 首屏品牌页
+    │   └── Index.vue          # 功能主页
     └── components/
-        ├── FilterPanel.vue       # 筛选面板 · 平台/时间/排序
-        ├── SummaryCard.vue       # 数据摘要卡片 · 数字滚动动画
-        ├── DataChart.vue         # ECharts 图表 · 饼图 + 柱状图
-        ├── DataTable.vue         # 数据表格 · 排序 · 标签
-        ├── ExportButton.vue      # Excel 导出按钮
-        └── ThemeToggle.vue       # 主题切换按钮 · 太阳/月亮图标动画
+        ├── FilterPanel.vue    # 筛选：平台、时间、排序
+        ├── SummaryCard.vue    # 统计卡片 + 数字滚动
+        ├── DataChart.vue      # 饼图 + 柱状图
+        ├── DataTable.vue      # 视频明细表
+        ├── ExportButton.vue   # 导出按钮
+        └── ThemeToggle.vue    # 主题切换按钮
 ```
 
-### 2.3 主要模块划分
-
-#### 数据服务模块 (`src/api/`)
-- **request.js**：封装 Axios 实例，配置 baseURL、超时、请求/响应拦截器
-- **bilibili.js**：调用 B站官方公开 API（热门视频列表、视频详情），数据格式化
-
-#### 业务逻辑模块 (`src/utils/`)
-- **classifier.js**：将 B站 20+ 原始分区归类为 6 大类别（游戏 / 影视娱乐 / 知识科技 / 生活 / 音乐舞蹈 / 动画），提供按类别聚合统计函数
-- **excel.js**：使用 xlsx 库生成包含 3 个工作表的结构化 Excel 报表
-- **date.js**：数字格式化（万/亿）、日期工具函数
-
-#### 视图层 (`src/views/` + `src/components/`)
-- **LandingPage.vue** → 品牌 Landing Page，几何线条 GSAP 入场动画
-- **Index.vue** → 主功能页，组合所有组件
-- **FilterPanel.vue** → 平台选择（B站）、时间范围（7天/30天）、排序方式
-- **SummaryCard.vue** → 视频总数、总播放量、总点赞、平均互动、最热分类
-- **DataChart.vue** → 饼图（类型分布）+ 柱状图（播放量对比），主题自适应
-- **DataTable.vue** → 视频详情表格，Element Plus Table
-- **ThemeToggle.vue** → 主题切换，GSAP 图标变形动画
-
-#### 主题系统 (`src/composables/` + `src/styles/`)
-- **useTheme.js** → 单例 composable，全局主题状态 + localStorage 持久化
-- **tokens.css** → 100+ CSS 自定义属性，白日/暗夜双套完整色板
-- **element-dark.css** → Element Plus 第三方组件库的完整主题覆盖
-
-### 2.4 数据流向
+### 2.3 数据怎么流动
 
 ```
-B站 API (公开)
-    │
-    ▼
-request.js (Axios + 拦截器)
-    │
-    ▼
-bilibili.js (fetchPopularVideos)
-    │
-    ▼
-classifier.js (classifyVideo → 归类)
-    │
-    ▼
-filterByPeriod (7天 / 30天过滤)
-    │
-    ▼
-Index.vue (videos[] → computed sortedVideos)
-    │
-    ├──→ SummaryCard.vue   (合计统计 + 数字动画)
-    ├──→ DataChart.vue      (categoryStats → ECharts 图表)
-    ├──→ DataTable.vue      (sortedVideos → 表格渲染)
-    └──→ ExportButton.vue   (exportToExcel → xlsx 下载)
+B站公开 API
+  → Axios 请求（统一拦截错误）
+    → 格式化视频数据（字段映射）
+      → 分类引擎归类（tid → tname → 大类）
+        → 按时间范围过滤（7天/30天）
+          → Index.vue 持有 videos[] 和 categoryStats[]
+            ├── SummaryCard：汇总 5 个指标，数字从 0 滚到实际值
+            ├── DataChart：categoryStats 喂给 ECharts
+            ├── DataTable：排序后的 videos 渲染表格
+            └── ExportButton：videos + stats 拼成 xlsx 下载
 ```
 
 ---
 
-## 3. 功能设计
+## 3. 功能介绍
 
-### 3.1 功能列表
+### 3.1 全部功能
 
-| 序号 | 功能 | 说明 |
-|------|------|------|
-| 1 | 品牌 Landing Page | 几何线条动画、品牌标题入场、点击进入主页 |
-| 2 | 热门视频获取 | 调用 B站官方 API，获取热门排行榜视频（约100条） |
-| 3 | 智能分类 | 将原始分区自动归类为 6 大内容类别 |
-| 4 | 时间筛选 | 支持近7天 / 近30天数据筛选 |
-| 5 | 排序切换 | 支持按播放量 / 点赞量 / 评论量排序 |
-| 6 | 数据摘要 | 5 张卡片展示核心指标，GSAP 数字滚动动画 |
-| 7 | 分类分布图 | ECharts 环形饼图，展示各类别视频数量与占比 |
-| 8 | 播放对比图 | ECharts 柱状图，各类别播放量 vs 点赞量对比 |
-| 9 | 视频详情表 | Element Plus 表格，排序、标签展示 |
-| 10 | Excel 导出 | 一键导出 3 Sheet 报表（视频列表/分类分析/数据概览） |
-| 11 | 主题切换 | 白日模式 ↔ 暗夜模式，太阳/月亮图标变形动画 |
-| 12 | 响应式布局 | 适配桌面端、平板、手机 |
+1. **Landing Page** — 几何线条动画入场，点击进入主页
+2. **获取数据** — 调 B站热门 API，拉取约 100 条视频
+3. **自动分类** — 20+ 分区归为 6 个大类
+4. **时间筛选** — 近 7 天 / 近 30 天
+5. **排序切换** — 按播放量 / 点赞量 / 评论量
+6. **统计卡片** — 视频总数、总播放、总点赞、平均互动、最热分类，数字滚动展示
+7. **饼图** — 各分类的视频数量分布
+8. **柱状图** — 各分类的播放量和点赞量对比
+9. **数据表格** — 排序、标签、悬停高亮
+10. **导出 Excel** — 三个 Sheet：视频列表、分类分析、数据概览
+11. **主题切换** — 白日/暗夜，图标有变形动画
+12. **响应式** — 桌面、平板、手机都能用
 
-### 3.2 核心功能说明
+### 3.2 分类器怎么工作
 
-#### 3.2.1 智能视频分类引擎
-
-B站官方将视频分为 20+ 个一级分区（动画、番剧、音乐、游戏、知识、科技等）。本项目的分类引擎将这些原始分区**聚合为 6 大内容类别**，使数据更易于理解和分析：
+B站的视频分区有 20 多个。分类器把它们归为 6 组：
 
 ```
 游戏       → 游戏
@@ -213,161 +144,120 @@ B站官方将视频分为 20+ 个一级分区（动画、番剧、音乐、游�
 动画       → 动画 + 鬼畜
 ```
 
-分类结果用于饼图展示、柱状图数据聚合和 Excel 分类分析报表。
+归完类之后，按类统计数量、播放量、点赞、评论、弹幕、分享。这些数据同时用于图表渲染和 Excel 导出。
 
-#### 3.2.2 双主题设计系统
+### 3.3 两种配色
 
-| 特性 | 白日模式 | 暗夜模式 |
+| 维度 | 白日模式 | 暗夜模式 |
 |------|---------|---------|
-| **设计基因** | Apple 纯白 + Tesla 减法 | Bugatti 克制 + Ferrari 暖黑 + Lamborghini 深渊 |
-| **画布** | `#ffffff` (Apple 纯白) | `#0a0a0b` (暖黑微温) |
-| **主色调** | `#4488f0` (Tesla Electric Blue) | `#b89764` (低调香槟金) |
-| **表面阶梯** | `#f5f5f7` → `#fafafa` → `#eeeeee` | `#111113` → `#17181a` → `#1e1f22` (Bugatti 微步) |
-| **文字** | `#1d1d1f` (Apple 深色体系) | `#e8e4df` (暖白体系) |
-| **阴影** | Apple 极柔微影 | Ferrari 极克清单影 |
-| **过渡** | Tesla 0.33s | Tesla 0.33s |
-| **按钮圆角** | Starbucks 50px pill | Starbucks 50px pill |
+| 底色 | `#ffffff` | `#0a0a0b` |
+| 主色 | `#4488f0` | `#b89764` |
+| 表面层次 | `#f5f5f7` / `#fafafa` / `#eeeeee` | `#111113` / `#17181a` / `#1e1f22` |
+| 文字 | `#1d1d1f` 体系 | `#e8e4df` 体系 |
+| 阴影 | 单层柔影 | 极克制，靠亮度区分层级 |
+| 参考 | Apple, Tesla, Starbucks | Bugatti, Ferrari, Lamborghini |
 
-#### 3.2.3 数据可视化
+主题状态存在 localStorage，刷新不丢。页面加载时在 Vue 挂载之前就设好 `data-theme` 属性，不会闪一下。
 
-- **环形饼图**：展示 6 大类别视频数量分布，支持百分比标签
-- **分组柱状图**：各类别播放量 vs 点赞量直观对比，圆角柱体
-- **主题自适应**：图表颜色、Tooltip 背景、轴线颜色均根据当前主题自动切换
+### 3.4 导出的是什么
 
-#### 3.2.4 Excel 报表导出
+导出的 Excel 文件包含三个工作表：
 
-导出文件包含 3 个工作表：
-1. **视频列表**：排名、标题、UP主、分区、分类、播放量、点赞、评论、弹幕、分享、发布时间、BV号
-2. **分类分析**：类别、视频数量、总播放/点赞/评论/弹幕/分享、平均播放量、播放占比
-3. **数据概览**：平台、时间范围、视频总数、总播放量、总点赞数、最热分类
+**Sheet 1 — 视频列表**：排名、标题、UP 主、分区、分类、播放量、点赞、评论、弹幕、分享、发布时间、BV 号
 
-### 3.3 交互设计
+**Sheet 2 — 分类分析**：类别名称、视频数量、各项指标合计、平均播放量、播放占比
 
-| 交互 | 实现方式 |
-|------|---------|
-| Landing Page 入场 | 几何线条拉伸 (scaleX) → 标题上浮 (y + autoAlpha) → 全部元素依次出现 |
-| 进入主页过渡 | 元素下移淡出 → 主页淡入上浮 |
-| 数字滚动 | GSAP 数值 tween，从 0 滚动到目标值（0.9s, power2.out） |
-| 图表入场 | 卡片 staggered 淡入上浮 |
-| 排序切换 | 表格行 re-stagger 动画 |
-| 主题切换 | 太阳/月亮图标 120° 旋转 + 收缩淡出 → 反向旋转弹入 |
-| 卡片 Hover | translateY(-2px) + 阴影增强 + 边框色过渡 |
-| 按钮按压 | scale(0.94~0.97) 反馈 |
+**Sheet 3 — 数据概览**：平台、时间范围、视频总数、总播放量、总点赞、最热分类
 
-### 3.4 用户界面展示
+### 3.5 动画做了什么
 
-**Landing Page（白日模式）**：
-- 几何装饰线 + 品牌标题"短视频趋势分析" + 副标题 + "进入平台"按钮
-- 背景：淡蓝色径向光晕
-
-**功能主页**：
-- 顶部 Header：标签行 + 标题 + 描述 + 主题切换按钮
-- 筛选面板：平台选择（Radio）+ 时间范围（Radio）+ 排序方式（Select）+ 获取数据按钮
-- 数据摘要：5 张统计卡片，最后一张为渐变色高亮
-- 图表区：饼图 + 柱状图并排
-- 数据详情：表格 + 导出按钮
+| 位置 | 效果 |
+|------|------|
+| Landing Page 入场 | 三条横线拉伸 → 标题从下浮上 → 按钮出现 |
+| 进入主页 | Landing Page 元素收走 → 主页淡入 |
+| 数据加载后 | 卡片和图表依次浮入 |
+| 统计数字 | 从 0 滚动到实际值，0.9 秒 |
+| 切换排序 | 表格行重新排列时有过渡 |
+| 切换主题 | 图标旋转 120° 缩小淡出 → 反向旋转弹入 |
 
 ---
 
-## 4. 编译发布
+## 4. 怎么跑起来
 
-### 4.1 环境要求
+### 4.1 环境
 
-| 工具 | 版本要求 |
-|------|---------|
-| Node.js | ≥ 18.0 |
-| npm | ≥ 9.0 |
+- Node.js ≥ 18
+- npm ≥ 9
 
-### 4.2 安装步骤
+### 4.2 安装和运行
 
 ```bash
-# 1. 克隆仓库
-git clone <your-gitee-repo-url>
+# 克隆
+git clone <仓库地址>
 cd final-work/video-stat
 
-# 2. 安装依赖
+# 装依赖
 npm install
-```
 
-### 4.3 运行方法
-
-```bash
-# 开发模式（Vite Dev Server，默认 http://localhost:5173）
-npm run dev
+# 开发
+npm run dev          # 默认 http://localhost:5173
 
 # 生产构建
-npm run build
+npm run build        # 输出到 dist/
 
-# 预览生产构建
-npm run preview
-
-# 启动 Express 生产服务器（API 代理 + 静态文件）
-npm run server
-
-# 一键构建 + 启动生产环境
+# 生产运行（Express 代理 + 静态文件）
 npm start
 ```
 
-### 4.4 构建部署
+### 4.3 部署
 
-```bash
-# 生产构建输出目录
-dist/
-├── index.html
-└── assets/
-    ├── index-*.css
-    └── index-*.js
-```
-
-- **静态部署**：将 `dist/` 目录部署至任意静态文件服务器（Nginx、Apache、GitHub Pages）
-- **Node.js 部署**：运行 `npm start` 启动 Express 服务器（含 API 代理）
+`dist/` 目录是纯静态文件，放到任何 Web 服务器即可。如果需要 API 代理，用 `npm start` 启动 Express。
 
 ---
 
-## 5. 效果展示
+## 5. 效果
 
-### 5.1 功能截图
+### 5.1 截图
 
-> 📸 *建议在此处插入以下截图：*
-> 1. Landing Page（白日模式）
-> 2. 功能主页·数据概览（白日模式）
-> 3. 功能主页·图表区（暗夜模式）
-> 4. Excel 导出文件预览
-> 5. 主题切换动画过程
+> 准备以下截图插入此处：
+> 1. Landing Page
+> 2. 功能主页（有数据状态）
+> 3. 图表区特写
+> 4. 暗夜模式整体效果
+> 5. 导出的 Excel 文件预览
 
-### 5.2 使用说明
+### 5.2 操作步骤
 
-1. **启动应用** → 进入 Landing Page，欣赏品牌动画
-2. **点击"进入平台"** → 进入功能主页
-3. **点击"获取数据"** → 拉取 B站热门视频数据（约 100 条）
-4. **查看摘要卡片** → 数字自动滚动至实际值
-5. **切换排序方式** → 表格数据重新排列
-6. **点击"导出 Excel 报表"** → 浏览器自动下载结构化报表
-7. **点击右上角 ☀️/🌙 图标** → 切换白日/暗夜模式
+1. 打开 → 看到 Landing Page
+2. 点"进入平台" → 到功能页
+3. 点"获取数据" → 等约 1-2 秒，数据和图表出来
+4. 切换时间范围或排序方式 → 数据刷新
+5. 点"导出 Excel 报表" → 浏览器下载文件
+6. 点右上角 ☀️/🌙 → 切换配色
 
 ### 5.3 演示视频
 
-> 🎥 *建议录制 2-3 分钟演示视频，展示完整操作流程*
+> 录制 2-3 分钟的操作演示
 
-### 5.4 在线演示
+### 5.4 在线地址
 
-> 🌐 *部署后在此填写在线访问链接*
+> 部署后填写 URL
 
 ---
 
 ## 6. 开发过程
 
-### 6.1 开发周期
+### 6.1 时间线
 
-| 阶段 | 内容 |
-|------|------|
-| **第10周** | 项目初始化、Gitee 仓库创建、技术选型 |
-| **第11周** | 数据层搭建（Axios + B站 API）、分类引擎实现 |
-| **第12周** | 组件开发（筛选面板、摘要卡片、图表、表格、导出） |
-| **第13周** | Landing Page、主题系统、GSAP 动画、UI 打磨 |
-| **第14周** | Bug 修复、暗夜模式重设计、README 文档 |
+| 周次 | 做了什么 |
+|------|---------|
+| 第 10 周 | 建仓库，定技术方案 |
+| 第 11 周 | 搭数据层：Axios 封装、B站 API 对接、分类引擎 |
+| 第 12 周 | 写组件：筛选、统计卡片、图表、表格、导出 |
+| 第 13 周 | Landing Page、主题系统、GSAP 动画 |
+| 第 14 周 | 修 Bug、暗夜模式改色、写文档 |
 
-### 6.2 Git 提交历史（摘要）
+### 6.2 提交记录
 
 ```
 5aadce6 解决了模式切换按钮消失的问题
@@ -383,65 +273,56 @@ d265c12 课程内容总结
 
 ---
 
-## 7. 挑战与解决方案
+## 7. 遇到的问题和解决方式
 
-### 7.1 主题切换时 ECharts 图表不更新
+### 7.1 切主题后图表颜色不变
 
-**问题**：切换主题后，ECharts 图表颜色保持旧主题色板。
+ECharts 的 option 是在组件初始化时算好的，主题切换不会自动重算。
 
-**解决**：将 `isDark` 作为 computed 属性，ECharts option 的所有颜色相关字段（title、tooltip、legend、series、axis）均基于 `isDark.value` 动态计算。Vue 的响应式系统自动触发图表重渲染。
+**处理**：把所有颜色相关的字段（标题色、tooltip 背景、轴线颜色、系列色）都写进 computed，依赖 `isDark` 这个 ref。主题一变，computed 重新求值，图表自动刷新。
 
-### 7.2 主题切换按钮动画图标消失
+### 7.2 主题切换按钮的图标会消失
 
-**问题**：使用 `v-show` 控制两个 SVG 图标的显示/隐藏，GSAP timeline 中途调用 `toggleTheme()` 时，Vue 的响应式 DOM 更新与 GSAP 的 inline style 设置产生竞争条件，导致新图标未正确显示。
+原来是 `v-show` 控制两个 SVG 图标的显示，GSAP 在 timeline 中途调 `toggleTheme()` 切换主题。Vue 的 `v-show` 更新和 GSAP 的 inline style 设置有时序冲突，新图标没显示出来。
 
-**解决**：移除 `v-show`，两个 SVG 图标始终渲染在 DOM 中并绝对定位叠放。改用 async/await 将动画拆分为独立的"离场→切换→入场"三阶段，GSAP 完全控制图标的 opacity/scale/rotate，避免与 Vue 响应式冲突。
+**处理**：去掉 `v-show`。两个图标一直挂在 DOM 里，绝对定位叠在一起。用 async/await 把动画拆成三步：先把当前图标转出去 → 切主题 → 把新图标转进来。全程用 GSAP 控制 opacity 和 scale，不依赖 Vue 切换。
 
-### 7.3 页面加载时主题闪烁 (FOUC)
+### 7.3 页面刷新时闪一下默认主题
 
-**问题**：页面加载时先显示默认主题（亮色），然后 JS 执行后才切换到保存的主题，产生闪烁。
+页面加载时先渲染默认亮色，然后 JS 读了 localStorage 才切到暗色。
 
-**解决**：在 `main.js` 中，**在 Vue 应用挂载之前**同步读取 localStorage 并设置 `document.documentElement.setAttribute('data-theme', saved)`，确保浏览器在首帧渲染前就知道当前主题。
+**处理**：在 `main.js` 里，`createApp()` 之前同步读 localStorage，直接设 `document.documentElement.setAttribute('data-theme', ...)`。浏览器首帧渲染时已经知道当前主题。
 
-### 7.4 B站 API 跨域 (CORS)
+### 7.4 开发环境请求 B站 API 跨域
 
-**问题**：开发环境下直接请求 B站 API 遇到 CORS 限制。
+**处理**：Vite 开发服务器配 proxy，把 `/x` 路径的请求转发到 B站域名。生产环境用 Express 做同样的代理。
 
-**解决**：通过 Vite 开发服务器的 proxy 配置转发 API 请求。生产环境使用 Express 服务器代理。
+### 7.5 Element Plus 在暗色下很违和
 
-### 7.5 Element Plus 黑色主题深度定制
+Element Plus 的默认样式是给亮色背景设计的，放到暗色下要么太亮要么看不清。而且很多色值是硬编码的。
 
-**问题**：Element Plus 组件的默认样式在暗色背景下视觉效果差，且硬编码色值散落在各处。
-
-**解决**：创建独立的 `element-dark.css`，将所有硬编码色值替换为 CSS 自定义属性引用（`var(--variable)`）。覆盖 Radio Button、Select、Table、Tag、Alert、Dropdown 等全部使用到的组件样式。
+**处理**：单独写了一个 `element-dark.css`，把所有硬编码颜色换成 CSS 变量引用。覆盖了 Radio Button、Select、Table、Tag、Alert、Dropdown 这些用到的组件。
 
 ---
 
-## 8. 未来改进计划
+## 8. 还可以做什么
 
-- [ ] 接入抖音开放平台 API，实现多平台数据对比
-- [ ] 添加视频详情弹窗（封面、描述、标签、UP主信息）
-- [ ] 增加时间趋势折线图（每日播放量变化）
-- [ ] 支持自定义分类规则
-- [ ] 添加数据缓存机制（IndexedDB），减少 API 请求
-- [ ] 支持导出 PDF 报表
-- [ ] 移动端 PWA 支持
-- [ ] 国际化（i18n）支持
-
----
-
-## 技术参考
-
-- [B站 API 文档](https://github.com/SocialSisterYi/bilibili-API-collect)
-- [Vue 3 官方文档](https://cn.vuejs.org/)
-- [Vite 官方文档](https://vite.dev/)
-- [Element Plus 官方文档](https://element-plus.org/)
-- [ECharts 官方文档](https://echarts.apache.org/)
-- [GSAP 官方文档](https://gsap.com/docs/)
-- [设计基因参考](https://github.com/awesome-design-md/awesome-design-md)
+- [ ] 接入抖音 API，做多平台对比
+- [ ] 加上每日播放量变化的折线图，看趋势
+- [ ] 点击视频行弹出详情（封面、描述、UP 主信息）
+- [ ] 允许用户自定义分类规则
+- [ ] 用 IndexedDB 缓存数据，减少重复请求
+- [ ] 适配移动端 PWA
+- [ ] PDF 导出
 
 ---
 
-**项目作者**：RUI
-**开发时间**：2026年5月
-**许可协议**：[MIT](LICENSE)
+## 参考
+
+- [B站非官方 API 文档](https://github.com/SocialSisterYi/bilibili-API-collect)
+- [Vue 3 文档](https://cn.vuejs.org/)
+- [Vite 文档](https://vite.dev/)
+- [Element Plus 文档](https://element-plus.org/)
+- [ECharts 文档](https://echarts.apache.org/)
+- [GSAP 文档](https://gsap.com/docs/)
+- [各品牌设计基因](https://github.com/awesome-design-md/awesome-design-md)
