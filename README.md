@@ -1,351 +1,447 @@
-# 前端开发
+# 短视频趋势分析 / Video Trend Analytics
 
-### 介绍
-《Web前端开发》课程教学资源网站
+> B站热门视频排行榜 · 智能分类 · 数据可视化 · 一键导出报表
 
-
-### 教学资源
-+ 课程项目： https://gitee.com/gethug/front-end-development.git
-+ HTML手册： https://www.w3school.com.cn/html/index.asp
-+ CSS 手册： https://www.w3school.com.cn/css/index.asp
-+ HTML+CSS 教程: https://www.bilibili.com/video/BV1MvaVzUEuz
-+ BootStrap 教程： https://www.w3school.com.cn/bootstrap5/index.asp
-
-
-### 教学计划
+[![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?logo=vue.js)](https://vuejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?logo=vite)](https://vite.dev/)
+[![Element Plus](https://img.shields.io/badge/Element_Plus-2.14-409EFF?logo=element)](https://element-plus.org/)
+[![ECharts](https://img.shields.io/badge/ECharts-6.1-AA344D)](https://echarts.apache.org/)
+[![GSAP](https://img.shields.io/badge/GSAP-3.15-88CE02?logo=greensock)](https://gsap.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-LTS-339933?logo=node.js)](https://nodejs.org/)
 
 ---
 
-#### 📅 第一阶段：Web 基石与响应式设计（第 1 - 3 周）
+## 目录
 
-**核心目标：** 掌握 HTML5/CSS3，能独立完成复杂且适配移动端的静态页面。
-
-* **第 1 周：HTML5 与 Web 标准**
-    * **L1：** 课程概论、开发环境（VS Code 插件配置）、HTTP 协议基础、HTML5 语义化（SEO 意义）。
-    * **L2：** 表单增强、Canvas 入门、音视频处理、Web 存储（LocalStorage/SessionStorage）。
-
-
-* **第 2 周：CSS3 核心与核心布局**
-    * **L3：** 盒子模型精讲、层叠上下文（Z-index 陷阱）、BFC 原理、传统浮动布局回顾。
-    * **L4：** **Flexbox 弹性布局**实战（导航栏、圣杯布局）、CSS 变量、过渡与动画（Transition/Animation）。
-
-
-* **第 3 周：现代布局与响应式**
-    * **L5：** **CSS Grid 网格布局**深度应用、多栏布局实现。
-    * **L6：** 媒体查询（Media Queries）、移动端适配（Rem/Vw 方案）、响应式实战：从 PC 到手机的无缝转换。
-
-
+- [1. 项目目的](#1-项目目的)
+- [2. 技术架构](#2-技术架构)
+- [3. 功能设计](#3-功能设计)
+- [4. 编译发布](#4-编译发布)
+- [5. 效果展示](#5-效果展示)
+- [6. 开发过程](#6-开发过程)
+- [7. 挑战与解决方案](#7-挑战与解决方案)
+- [8. 未来改进计划](#8-未来改进计划)
 
 ---
 
-#### 🚀 第二阶段：JavaScript 程序设计深度进阶（第 4 - 6 周）
+## 1. 项目目的
 
-**核心目标：** 攻克 JS 难点，培养真正的“前端逻辑感”。
+### 1.1 项目背景
 
-* **第 4 周：JS 语法精粹与 ES6+**
-    * **L7：** 数据类型底层逻辑（堆栈）、作用域链、闭包（Closure）及其应用场景。
-    * **L8：** ES6+ 必会特性：解构赋值、剩余参数、**Arrow Functions**、类（Class）与继承。
+在日常学习和生活中，我们经常浏览B站（Bilibili）的热门视频来获取热点信息和娱乐内容。然而，B站官方的热门排行榜**缺乏对视频内容的自动分类、多维度数据对比和一键数据导出能力**，用户难以快速了解不同内容类型的分布趋势和播放表现。
 
+### 1.2 解决的问题
 
-* **第 5 周：DOM/BOM 与交互逻辑**
-    * **L9：** 高性能 DOM 操作、事件流机制（冒泡与捕获）、事件委托优化。
-    * **L10：** 浏览器对象模型（BOM）、定时器深入（防抖与节流 Debounce/Throttle）。
+| 痛点 | 本项目解决方案 |
+|------|---------------|
+| 热门视频无法按类型分组统计 | 智能分类引擎：将B站20+分区自动归类为6大内容类别 |
+| 视频数据缺乏可视化分析 | ECharts 交互图表：饼图 + 柱状图，直观呈现分类分布与播放对比 |
+| 无法导出数据进行二次分析 | 一键导出 Excel：3 Sheet 完整报表（视频列表 / 分类分析 / 数据概览） |
+| 排行榜数据时效性差 | 实时调用 B站官方 API，支持近7天 / 近30天筛选 |
+| 界面单调、缺乏品质感 | Apple × Tesla × Ferrari 多品牌设计融合，双主题（白日/暗夜）可切换 |
 
+### 1.3 应用场景
 
-* **第 6 周：异步编程与网络通信**
-    * **L11：** **Promise A+ 规范解析**、Async/Await 优雅异步。
-    * **L12：** 原生 Ajax 与 Fetch API、跨域（CORS/JSONP）原理及解决方案、拦截器思路。
+- **内容创作者**：分析热门视频的类型和趋势，辅助选题决策
+- **数据分析爱好者**：快速获取结构化视频数据，进行二次分析
+- **运营人员**：监控热门内容分布，了解平台内容生态
+- **普通用户**：浏览排行榜，按分类筛选感兴趣的视频
 
+### 1.4 创新点
 
-
----
-
-#### 🛠 第三阶段：Node.js 后端思维与工程化（第 7 - 8 周）
-
-**核心目标：** 理解前端基石，具备全栈视角和自动化工具使用能力。
-
-* **第 7 周：Node.js 环境与模块化**
-    * **L13：** CommonJS 与 ESM 模块规范、NPM/PNPM 包管理、脚本自动化。
-    * **L14：** Express 框架快速上手：路由设计、中间件机制、模拟 RESTful API 服务。
-
-
-* **第 8 周：构建工具与界面库**
-    * **L15：** **Vite/Webpack** 原理浅析、模块热更新（HMR）、打包优化策略。
-    * **L16：** 界面库实战：基于 Element Plus 或 Ant Design 的 UI 快速构建方案。
-
-
+1. **双主题设计系统**：基于 6 个国际顶级品牌（Apple、Tesla、Starbucks、Bugatti、Ferrari、Lamborghini）的设计基因，打造白日模式（清新专业）与暗夜模式（低调奢华）两套完整视觉方案
+2. **GSAP 全链路动画**：从 Landing Page 入场 → 数据卡片数字滚动 → 图表渲染 → 主题切换图标变形，动画覆盖每一步用户操作
+3. **智能分类引擎**：将 B站 20+ 原始分区映射为 6 大内容类别，支持多维度聚合统计
+4. **零外部依赖的 Excel 导出**：使用 xlsx 库生成 3 Sheet 结构化报表，列宽自适应
 
 ---
 
-#### ⚛️ 第四阶段：Vue 3 渐进式框架精讲（第 9 - 11 周）
+## 2. 技术架构
 
-**核心目标：** 进入企业级开发模式，掌握组件化设计思想。
+### 2.1 技术栈
 
-* **第 9 周：Vue 核心原理与指令**
-    * **L17：** **Vue 3 响应式原理（Proxy）**、Setup 语法糖、ref 与 reactive 深度对比。
-    * **L18：** 常用指令、条件/循环渲染优化、计算属性（Computed）与侦听器（Watch）。
+```
+┌─────────────────────────────────────────────────────────┐
+│                     用户界面层                            │
+│   Vue 3 (Composition API)  ·  Element Plus  ·  ECharts   │
+│   GSAP (动画)  ·  CSS Custom Properties (主题系统)         │
+├─────────────────────────────────────────────────────────┤
+│                     业务逻辑层                            │
+│   视频分类引擎  ·  数据过滤排序  ·  Excel 导出             │
+├─────────────────────────────────────────────────────────┤
+│                     数据服务层                            │
+│   Axios (HTTP)  ·  Bilibili API  ·  Express (生产服务)     │
+├─────────────────────────────────────────────────────────┤
+│                     构建部署层                            │
+│   Vite 8 (构建)  ·  Node.js (运行)  ·  Git (版本管理)      │
+└─────────────────────────────────────────────────────────┘
+```
 
+| 类别 | 技术 | 用途 |
+|------|------|------|
+| **前端框架** | Vue 3.5 (Composition API + `<script setup>`) | 组件化开发、响应式数据管理 |
+| **构建工具** | Vite 8 | 开发服务器、生产构建 |
+| **UI 组件库** | Element Plus 2.14 | Radio Button、Select、Table、Tag、Alert |
+| **数据可视化** | ECharts 6.1 + vue-echarts | 饼图（分类分布）、柱状图（播放对比） |
+| **动画引擎** | GSAP 3.15 | Landing Page 入场、数字滚动、图表过渡、主题切换动画 |
+| **HTTP 客户端** | Axios 1.16 | 请求 B站 API、错误拦截 |
+| **数据处理** | xlsx 0.18 | Excel 报表生成与导出 |
+| **后端服务** | Express 4.21 | 生产环境 API 代理（CORS 解决） |
+| **样式方案** | CSS Custom Properties | 双主题无缝切换、零 FOUC |
+| **版本管理** | Git + Gitee | 代码版本控制 |
 
-* **第 10 周：组件系统深度开发**
-    * **L19：** 组件通信全方案（Props/Emit/V-model/Provide-Inject）。
-    * **L20：** 插槽（Slots）高级用法、生命周期钩子函数、自定义 Hooks（逻辑复用）。
+### 2.2 项目结构
 
+```
+video-stat/
+├── index.html                    # 入口 HTML
+├── package.json                  # 依赖与脚本配置
+├── vite.config.js                # Vite 构建配置
+├── server/
+│   └── index.js                  # Express API 代理服务器
+└── src/
+    ├── main.js                   # 应用入口 · FOUC 防护 · Element Plus 注册
+    ├── App.vue                   # 根组件 · Landing Page ↔ 主页切换
+    ├── api/
+    │   ├── request.js            # Axios 实例 · 拦截器 · 错误处理
+    │   └── bilibili.js           # B站 API 封装 · 热门视频 / 视频详情
+    ├── utils/
+    │   ├── classifier.js         # 视频分类引擎 · 分区映射 · 聚合统计
+    │   ├── date.js               # 数字格式化 · 日期工具
+    │   └── excel.js              # Excel 报表生成 · 多 Sheet 导出
+    ├── composables/
+    │   └── useTheme.js           # 单例主题状态管理 · localStorage 持久化
+    ├── styles/
+    │   ├── tokens.css            # 设计 Token · 双主题变量 · 全局样式
+    │   └── element-dark.css      # Element Plus 主题覆盖
+    ├── views/
+    │   ├── LandingPage.vue       # Landing Page · 品牌展示 · GSAP 入场动画
+    │   └── Index.vue             # 功能主页 · 数据面板 · 筛选与图表
+    └── components/
+        ├── FilterPanel.vue       # 筛选面板 · 平台/时间/排序
+        ├── SummaryCard.vue       # 数据摘要卡片 · 数字滚动动画
+        ├── DataChart.vue         # ECharts 图表 · 饼图 + 柱状图
+        ├── DataTable.vue         # 数据表格 · 排序 · 标签
+        ├── ExportButton.vue      # Excel 导出按钮
+        └── ThemeToggle.vue       # 主题切换按钮 · 太阳/月亮图标动画
+```
 
-* **第 11 周：全家桶应用（Router & Pinia）**
-    * **L21：** **Vue Router**：动态路由、嵌套路由、路由守卫（登录态校验）。
-    * **L22：** **Pinia** 状态管理：Store 设计模式、持久化存储、全局状态同步。
+### 2.3 主要模块划分
 
+#### 数据服务模块 (`src/api/`)
+- **request.js**：封装 Axios 实例，配置 baseURL、超时、请求/响应拦截器
+- **bilibili.js**：调用 B站官方公开 API（热门视频列表、视频详情），数据格式化
 
+#### 业务逻辑模块 (`src/utils/`)
+- **classifier.js**：将 B站 20+ 原始分区归类为 6 大类别（游戏 / 影视娱乐 / 知识科技 / 生活 / 音乐舞蹈 / 动画），提供按类别聚合统计函数
+- **excel.js**：使用 xlsx 库生成包含 3 个工作表的结构化 Excel 报表
+- **date.js**：数字格式化（万/亿）、日期工具函数
+
+#### 视图层 (`src/views/` + `src/components/`)
+- **LandingPage.vue** → 品牌 Landing Page，几何线条 GSAP 入场动画
+- **Index.vue** → 主功能页，组合所有组件
+- **FilterPanel.vue** → 平台选择（B站）、时间范围（7天/30天）、排序方式
+- **SummaryCard.vue** → 视频总数、总播放量、总点赞、平均互动、最热分类
+- **DataChart.vue** → 饼图（类型分布）+ 柱状图（播放量对比），主题自适应
+- **DataTable.vue** → 视频详情表格，Element Plus Table
+- **ThemeToggle.vue** → 主题切换，GSAP 图标变形动画
+
+#### 主题系统 (`src/composables/` + `src/styles/`)
+- **useTheme.js** → 单例 composable，全局主题状态 + localStorage 持久化
+- **tokens.css** → 100+ CSS 自定义属性，白日/暗夜双套完整色板
+- **element-dark.css** → Element Plus 第三方组件库的完整主题覆盖
+
+### 2.4 数据流向
+
+```
+B站 API (公开)
+    │
+    ▼
+request.js (Axios + 拦截器)
+    │
+    ▼
+bilibili.js (fetchPopularVideos)
+    │
+    ▼
+classifier.js (classifyVideo → 归类)
+    │
+    ▼
+filterByPeriod (7天 / 30天过滤)
+    │
+    ▼
+Index.vue (videos[] → computed sortedVideos)
+    │
+    ├──→ SummaryCard.vue   (合计统计 + 数字动画)
+    ├──→ DataChart.vue      (categoryStats → ECharts 图表)
+    ├──→ DataTable.vue      (sortedVideos → 表格渲染)
+    └──→ ExportButton.vue   (exportToExcel → xlsx 下载)
+```
 
 ---
 
-#### 🏁 第五阶段：前端性能与质量保障（第 12 周）
+## 3. 功能设计
 
-**核心目标：** 提升代码质量，做好项目前的最后准备。
+### 3.1 功能列表
 
-* **第 12 周：工程实践与项目指导**
-    * **L23：** 前端代码规范（ESLint/Prettier）、TypeScript 基础（类型声明在 Vue 中的应用）。
-    * **L24：** 性能指标（Lighthouse）、错误监控与异常处理、期末大作业需求发布与技术选型指导。
+| 序号 | 功能 | 说明 |
+|------|------|------|
+| 1 | 品牌 Landing Page | 几何线条动画、品牌标题入场、点击进入主页 |
+| 2 | 热门视频获取 | 调用 B站官方 API，获取热门排行榜视频（约100条） |
+| 3 | 智能分类 | 将原始分区自动归类为 6 大内容类别 |
+| 4 | 时间筛选 | 支持近7天 / 近30天数据筛选 |
+| 5 | 排序切换 | 支持按播放量 / 点赞量 / 评论量排序 |
+| 6 | 数据摘要 | 5 张卡片展示核心指标，GSAP 数字滚动动画 |
+| 7 | 分类分布图 | ECharts 环形饼图，展示各类别视频数量与占比 |
+| 8 | 播放对比图 | ECharts 柱状图，各类别播放量 vs 点赞量对比 |
+| 9 | 视频详情表 | Element Plus 表格，排序、标签展示 |
+| 10 | Excel 导出 | 一键导出 3 Sheet 报表（视频列表/分类分析/数据概览） |
+| 11 | 主题切换 | 白日模式 ↔ 暗夜模式，太阳/月亮图标变形动画 |
+| 12 | 响应式布局 | 适配桌面端、平板、手机 |
 
+### 3.2 核心功能说明
 
+#### 3.2.1 智能视频分类引擎
+
+B站官方将视频分为 20+ 个一级分区（动画、番剧、音乐、游戏、知识、科技等）。本项目的分类引擎将这些原始分区**聚合为 6 大内容类别**，使数据更易于理解和分析：
+
+```
+游戏       → 游戏
+影视娱乐   → 娱乐 + 影视 + 电影 + 电视剧 + 番剧 + 国创
+知识科技   → 知识 + 科技 + 纪录片
+生活       → 生活 + 美食 + 时尚 + 运动 + 汽车 + 动物圈
+音乐舞蹈   → 音乐 + 舞蹈
+动画       → 动画 + 鬼畜
+```
+
+分类结果用于饼图展示、柱状图数据聚合和 Excel 分类分析报表。
+
+#### 3.2.2 双主题设计系统
+
+| 特性 | 白日模式 | 暗夜模式 |
+|------|---------|---------|
+| **设计基因** | Apple 纯白 + Tesla 减法 | Bugatti 克制 + Ferrari 暖黑 + Lamborghini 深渊 |
+| **画布** | `#ffffff` (Apple 纯白) | `#0a0a0b` (暖黑微温) |
+| **主色调** | `#4488f0` (Tesla Electric Blue) | `#b89764` (低调香槟金) |
+| **表面阶梯** | `#f5f5f7` → `#fafafa` → `#eeeeee` | `#111113` → `#17181a` → `#1e1f22` (Bugatti 微步) |
+| **文字** | `#1d1d1f` (Apple 深色体系) | `#e8e4df` (暖白体系) |
+| **阴影** | Apple 极柔微影 | Ferrari 极克清单影 |
+| **过渡** | Tesla 0.33s | Tesla 0.33s |
+| **按钮圆角** | Starbucks 50px pill | Starbucks 50px pill |
+
+#### 3.2.3 数据可视化
+
+- **环形饼图**：展示 6 大类别视频数量分布，支持百分比标签
+- **分组柱状图**：各类别播放量 vs 点赞量直观对比，圆角柱体
+- **主题自适应**：图表颜色、Tooltip 背景、轴线颜色均根据当前主题自动切换
+
+#### 3.2.4 Excel 报表导出
+
+导出文件包含 3 个工作表：
+1. **视频列表**：排名、标题、UP主、分区、分类、播放量、点赞、评论、弹幕、分享、发布时间、BV号
+2. **分类分析**：类别、视频数量、总播放/点赞/评论/弹幕/分享、平均播放量、播放占比
+3. **数据概览**：平台、时间范围、视频总数、总播放量、总点赞数、最热分类
+
+### 3.3 交互设计
+
+| 交互 | 实现方式 |
+|------|---------|
+| Landing Page 入场 | 几何线条拉伸 (scaleX) → 标题上浮 (y + autoAlpha) → 全部元素依次出现 |
+| 进入主页过渡 | 元素下移淡出 → 主页淡入上浮 |
+| 数字滚动 | GSAP 数值 tween，从 0 滚动到目标值（0.9s, power2.out） |
+| 图表入场 | 卡片 staggered 淡入上浮 |
+| 排序切换 | 表格行 re-stagger 动画 |
+| 主题切换 | 太阳/月亮图标 120° 旋转 + 收缩淡出 → 反向旋转弹入 |
+| 卡片 Hover | translateY(-2px) + 阴影增强 + 边框色过渡 |
+| 按钮按压 | scale(0.94~0.97) 反馈 |
+
+### 3.4 用户界面展示
+
+**Landing Page（白日模式）**：
+- 几何装饰线 + 品牌标题"短视频趋势分析" + 副标题 + "进入平台"按钮
+- 背景：淡蓝色径向光晕
+
+**功能主页**：
+- 顶部 Header：标签行 + 标题 + 描述 + 主题切换按钮
+- 筛选面板：平台选择（Radio）+ 时间范围（Radio）+ 排序方式（Select）+ 获取数据按钮
+- 数据摘要：5 张统计卡片，最后一张为渐变色高亮
+- 图表区：饼图 + 柱状图并排
+- 数据详情：表格 + 导出按钮
 
 ---
 
-#### 📝 教学策略说明：
+## 4. 编译发布
 
-1. **分层教学：** 前 6 周夯实基础，防止学生在后面框架学习中“由于不懂 JS 基础而产生挫败感”。
-2. **上机特色：** 每次课的前 45 分钟讲解知识点，后 75 分钟进行针对性的 Coding 练习。
-3. **衔接建议：** 第 12 周结束时，我会提供 3-5 个不同方向的期末项目模板，供学生在课后的一周内独立或结对完成。
+### 4.1 环境要求
+
+| 工具 | 版本要求 |
+|------|---------|
+| Node.js | ≥ 18.0 |
+| npm | ≥ 9.0 |
+
+### 4.2 安装步骤
+
+```bash
+# 1. 克隆仓库
+git clone <your-gitee-repo-url>
+cd final-work/video-stat
+
+# 2. 安装依赖
+npm install
+```
+
+### 4.3 运行方法
+
+```bash
+# 开发模式（Vite Dev Server，默认 http://localhost:5173）
+npm run dev
+
+# 生产构建
+npm run build
+
+# 预览生产构建
+npm run preview
+
+# 启动 Express 生产服务器（API 代理 + 静态文件）
+npm run server
+
+# 一键构建 + 启动生产环境
+npm start
+```
+
+### 4.4 构建部署
+
+```bash
+# 生产构建输出目录
+dist/
+├── index.html
+└── assets/
+    ├── index-*.css
+    └── index-*.js
+```
+
+- **静态部署**：将 `dist/` 目录部署至任意静态文件服务器（Nginx、Apache、GitHub Pages）
+- **Node.js 部署**：运行 `npm start` 启动 Express 服务器（含 API 代理）
 
 ---
 
-## 📋 各周实际内容总结
+## 5. 效果展示
 
-### Week 1：环境搭建 + Git + Markdown + HTML 入门
+### 5.1 功能截图
 
-**学习内容：**
-- 搭建开发环境：安装 Git 客户端、注册 Gitee 账号创建仓库、安装 VSCode、安装 Chrome 浏览器
-- Git 命令使用基础（参考：廖雪峰 Git 教程）
-- Markdown 文档编写基础语法（参考：菜鸟教程）
-- HTML 入门教程（参考：W3School + B站视频 03~21集）
+> 📸 *建议在此处插入以下截图：*
+> 1. Landing Page（白日模式）
+> 2. 功能主页·数据概览（白日模式）
+> 3. 功能主页·图表区（暗夜模式）
+> 4. Excel 导出文件预览
+> 5. 主题切换动画过程
 
-**课后作业：**
-- 创建名为 "WEB前端开发"、路径为 `/front-end-dev` 的 Gitee 仓库
-- 在仓库下创建 `week_01` 目录并提交作业
-- 在钉钉群共享文档中填写仓库访问地址
+### 5.2 使用说明
+
+1. **启动应用** → 进入 Landing Page，欣赏品牌动画
+2. **点击"进入平台"** → 进入功能主页
+3. **点击"获取数据"** → 拉取 B站热门视频数据（约 100 条）
+4. **查看摘要卡片** → 数字自动滚动至实际值
+5. **切换排序方式** → 表格数据重新排列
+6. **点击"导出 Excel 报表"** → 浏览器自动下载结构化报表
+7. **点击右上角 ☀️/🌙 图标** → 切换白日/暗夜模式
+
+### 5.3 演示视频
+
+> 🎥 *建议录制 2-3 分钟演示视频，展示完整操作流程*
+
+### 5.4 在线演示
+
+> 🌐 *部署后在此填写在线访问链接*
 
 ---
 
-### Week 2：CSS 学习计划（4周总览 + 第一阶段基础）
+## 6. 开发过程
 
-**四阶段 CSS 学习路线：**
+### 6.1 开发周期
 
 | 阶段 | 内容 |
 |------|------|
-| 第一阶段：基础 | CSS 基本语法和引入方式、基础选择器（元素/类/ID）、文本样式和颜色、复杂选择器（伪类/伪元素/属性选择器） |
-| 第二阶段：进阶 | 盒模型基础、Flexbox 弹性布局、定位（Position）、浮动布局（Float，了解即可） |
-| 第三阶段：高级 | CSS Grid 网格布局、响应式设计和媒体查询、CSS 动画和过渡、CSS 变量和自定义属性 |
-| 第四阶段：实践 | 完成静态页面项目、学习 CSS 框架（Bootstrap/Tailwind）、了解 CSS 预处理器（Sass/Less） |
+| **第10周** | 项目初始化、Gitee 仓库创建、技术选型 |
+| **第11周** | 数据层搭建（Axios + B站 API）、分类引擎实现 |
+| **第12周** | 组件开发（筛选面板、摘要卡片、图表、表格、导出） |
+| **第13周** | Landing Page、主题系统、GSAP 动画、UI 打磨 |
+| **第14周** | Bug 修复、暗夜模式重设计、README 文档 |
 
-**学习资源：** MDN Web Docs、W3School CSS 教程、CSS Tricks、Can I Use（兼容性查询）
-
-**CSS 五大核心：** 选择器系统 → 盒模型 → 布局方法（Flexbox/Grid）→ 层叠和继承 → 响应式设计
-
----
-
-### Week 3：CSS 进阶（第二阶段）
-
-- 完成第一阶段基础内容后，进入第二阶段
-- **核心知识点：** 盒模型基础、Flexbox 弹性布局、定位（Position）、浮动布局（Float）
-
----
-
-### Week 4：CSS 框架（Bootstrap + Tailwind）
-
-**学习目标：** 从"手写所有样式"过渡到"使用框架开发"
-
-**Bootstrap 5 核心内容：**
-- 框架概述：Bootstrap 历史、版本演进、与其他框架对比
-- 快速开始：CDN 引入、本地安装、基础 HTML 模板
-- **栅格系统（最重要）：** 容器/行/列、12列布局、6个断点（xs/sm/md/lg/xl/xxl）、嵌套列
-- 常用组件：排版、按钮、表单、导航、卡片、模态框、下拉菜单、折叠、轮播图
-- 实用工具类：Spacing、Colors、Display、Flexbox 工具类
-
-**核心概念：** 移动优先（Mobile First）、工具类优先、组件化
-
-**学习路径：** 理解框架思维 → 掌握栅格系统 → 熟悉常用组件 → 自定义主题 → 响应式实战
-
-**同时包含：** Tailwind CSS 开发教程
-
----
-
-### Week 5：JavaScript 基础
-
-**第一次课：基础语法**
-- JavaScript 概述（历史、用途、vs Java、动态类型、浏览器/Node.js环境）
-- 变量声明与数据类型（String/Number/Boolean/null/undefined）、typeof、类型转换
-- 运算符（算术/比较/逻辑/赋值）
-- 控制流（if...else/switch/三元运算符/for/while/do...while/break/continue）
-
-**第二次课：函数、数组、对象与字符串**
-- 函数：声明、参数和返回值、作用域、函数作为值
-- 数组：创建、基本操作、常用方法（push/pop/shift/unshift等）、遍历
-- 对象：创建、属性访问、对象方法、遍历、对象数组
-- 字符串：基本操作、查找子串、截取、分割与替换
-
-**课后作业（100分 + 20分加分）：**
-- BMI 计算器（50分）
-- 简易购物车程序（50分）
-
-**学习资源：** MDN JavaScript 指南、JavaScript.info 中文版、《JavaScript高级程序设计》
-
----
-
-### Week 6：DOM 操作与事件
-
-**学习目标：**
-- 理解 DOM 树结构
-- 掌握 DOM 选择器：`getElementById`、`querySelector` 等
-- 掌握 DOM 操作：内容、属性、样式修改
-- 掌握事件处理机制：`addEventListener`
-- 能够创建交互式网页
-
----
-
-### Week 7：Node.js 前端开发基础
-
-**学习目标：**
-- 理解 Node.js 在前端开发中的角色和价值
-- 独立搭建 Node.js 开发环境
-- 掌握 npm 包管理和项目配置
-- 理解 ES Modules 模块化规范
-- 理解前端开发工具工作原理（dev server、热加载）
-
----
-
-### Week 8：Node.js + Vite 现代工具链
-
-**文件1：`vite-project.md` — Vite 实战教程**
-
-- **前端工程演进：** 手工时代 → Grunt/Gulp → Webpack → Vite
-- **Vite 核心特性：** 开发时利用浏览器原生 ESM（无需打包）、生产时使用 Rollup、零配置开箱即用、插件化
-- **Vite vs Webpack：** 冷启动 ~1秒 vs 10-30秒；HMR 始终快速
-- **HMR 热模块替换原理：** 文件变化检测 → WebSocket 通知 → ESM 请求新模块 → 页面局部更新、状态保留
-- **完整实战项目：** 用 Vite + vanilla JS 构建 Todo App（含 utils.js、App.js、style.css）
-- **生产构建：** `vite build` 输出带哈希的优化文件
-
-**文件2：`manual-chunks.md` — 代码分割详解**
-
-- `manualChunks` 是 Rollup 的手动代码分割机制
-- **使用场景：** 第三方库分离（vendor）、按库精细分割、按功能/业务模块分割、缓存优化
-- **最佳实践：** 合理平衡大小（3~8个chunk）、避免过度分割、与路由懒加载结合
-- 含完整 `vite.config.js` 配置示例和 `rollup-plugin-visualizer` 可视化分析
-
----
-
-### Week 9：Vue 3 入门
-
-**环境准备：**
-- 使用 `npm create vue@latest` 创建项目
-- Vite 作为构建工具的优势（极速启动、即时HMR、开箱即用）
-- 推荐 VS Code 扩展：Volar、ESLint、Prettier
-
-**Composition API 核心：**
-- `setup()` 函数 — 组件入口
-- `ref()` — 响应式基本类型（JS中需 `.value`，模板中自动解包）
-- `reactive()` — 响应式对象/数组
-- `computed()` — 计算属性（缓存特性）
-- `watch()` — 侦听器（侦听单个/多个数据源）
-
-**模板语法：**
-- 插值表达式、v-text/v-html、v-bind（缩写 `:`）、v-on（缩写 `@`）
-- v-model 双向绑定（支持文本/多行/复选框/单选/选择框）
-- 条件渲染 v-if/v-else-if/v-else（DOM移除）vs v-show（CSS display）
-- 列表渲染 v-for（必须绑定唯一 key）
-
-**实战：** Todo List 应用
-
----
-
-### Week 10：Vue 组件化
-
-**组件化思想：** 乐高积木类比、组件树、单文件组件（SFC = template + script + style）
-
-**Props（父→子）：**
-- 数组语法 vs 对象语法（推荐，支持类型检查/必填/默认值/自定义验证）
-- 单向数据流：子组件不可修改 props，通过 emit 通知父组件
-- 命名规范：JS 中 camelCase，模板中 kebab-case
-
-**Emit（子→父）：**
-- 数组语法 vs 对象语法（支持事件验证）
-- v-model 在组件中的实现：`modelValue` prop + `update:modelValue` 事件
-- Vue 3 支持多个 v-model（自定义 prop 名称）
-
-**插槽（内容分发）：**
-- 默认插槽：单个内容分发
-- 具名插槽：`<slot name="header">` + `<template #header>`
-- 作用域插槽：子组件向插槽传递数据（如表格自定义列渲染）
-
-**生命周期钩子：**
-| 钩子 | 使用场景 | 频率 |
-|------|---------|------|
-| `onMounted` | API请求、定时器、DOM操作、初始化第三方库 | ⭐⭐⭐ |
-| `onUpdated` | DOM更新后操作（避免修改状态导致无限循环） | ⭐⭐ |
-| `onUnmounted` | 清理定时器、取消订阅、解绑事件 | ⭐⭐⭐ |
-
-**组件通信进阶：**
-- `provide/inject` — 跨层级通信（如主题、全局配置）
-- 组件 ref 引用 — 直接访问子组件实例
-- `$attrs` — 非 Props 特性自动继承
-
-**组件样式：**
-- `scoped` 原理：自动添加 `data-v-xxxx` 属性隔离
-- `:deep()` 样式穿透修改子组件
-
----
-
-### Week 11：Vue 进阶与路由
-
-**Provide/Inject 跨层级通信：**
-- 解决 props 逐层透传问题
-- 祖先 `provide('key', refValue)` → 后代 `inject('key')`
-- 适合：全局配置（主题/语言）、工具函数；不适合：频繁变化数据
-
-**Vue Router：**
-- 安装：`npm install vue-router@4`
-- 核心组件：`<RouterLink>`（导航链接）、`<RouterView>`（渲染出口）
-- 动态路由：`/todos/:id`（通过 `useRoute().params` 获取）
-- 编程式导航：`router.push()`、`router.replace()`、`router.back()`、`router.go()`
-- 路由守卫：全局 `beforeEach`（登录态校验）、组件内 `onBeforeRouteLeave`（未保存提示）
-- 404 通配路由：`/:pathMatch(.*)*`
-- 最佳实践：命名路由、懒加载、props 传参
-
-**项目架构：**
-```
-src/
-├── components/       # 可复用组件
-│   ├── common/       # 通用基础组件
-│   └── layout/       # 布局组件
-├── views/            # 页面级组件
-├── router/           # 路由配置
-├── stores/           # 状态管理（Pinia）
-├── composables/      # 组合式函数
-├── api/              # API 封装
-├── utils/            # 工具函数
-└── directives/       # 自定义指令
-```
-
-**命名规范：** 组件 `PascalCase`、工具函数 `camelCase`、组合函数 `useXxx`、常量 `UPPER_SNAKE_CASE`
-
----
-
-### 整体课程路线图
+### 6.2 Git 提交历史（摘要）
 
 ```
-Week 1:          环境搭建 + Git + Markdown + HTML 入门
-Week 2~4:        CSS（基础选择器 → 盒模型/Flexbox → Bootstrap/Tailwind 框架）
-Week 5~6:        JavaScript（基础语法 → DOM 操作与事件）
-Week 7~8:        Node.js / npm / Vite（模块化 → 构建工具链 + 代码分割）
-Week 9~11:       Vue 3（Composition API → 组件化(Props/Emit/Slots) → 路由 + 项目架构）
+5aadce6 解决了模式切换按钮消失的问题
+4bde99e bug修复
+037a635 美化
+40204fc 优化
+e706316 列表改进
+0dc2af3 极限推进中
+3d2861d 框架
+d265c12 课程内容总结
+0cc1342 记录
 ```
 
+---
+
+## 7. 挑战与解决方案
+
+### 7.1 主题切换时 ECharts 图表不更新
+
+**问题**：切换主题后，ECharts 图表颜色保持旧主题色板。
+
+**解决**：将 `isDark` 作为 computed 属性，ECharts option 的所有颜色相关字段（title、tooltip、legend、series、axis）均基于 `isDark.value` 动态计算。Vue 的响应式系统自动触发图表重渲染。
+
+### 7.2 主题切换按钮动画图标消失
+
+**问题**：使用 `v-show` 控制两个 SVG 图标的显示/隐藏，GSAP timeline 中途调用 `toggleTheme()` 时，Vue 的响应式 DOM 更新与 GSAP 的 inline style 设置产生竞争条件，导致新图标未正确显示。
+
+**解决**：移除 `v-show`，两个 SVG 图标始终渲染在 DOM 中并绝对定位叠放。改用 async/await 将动画拆分为独立的"离场→切换→入场"三阶段，GSAP 完全控制图标的 opacity/scale/rotate，避免与 Vue 响应式冲突。
+
+### 7.3 页面加载时主题闪烁 (FOUC)
+
+**问题**：页面加载时先显示默认主题（亮色），然后 JS 执行后才切换到保存的主题，产生闪烁。
+
+**解决**：在 `main.js` 中，**在 Vue 应用挂载之前**同步读取 localStorage 并设置 `document.documentElement.setAttribute('data-theme', saved)`，确保浏览器在首帧渲染前就知道当前主题。
+
+### 7.4 B站 API 跨域 (CORS)
+
+**问题**：开发环境下直接请求 B站 API 遇到 CORS 限制。
+
+**解决**：通过 Vite 开发服务器的 proxy 配置转发 API 请求。生产环境使用 Express 服务器代理。
+
+### 7.5 Element Plus 黑色主题深度定制
+
+**问题**：Element Plus 组件的默认样式在暗色背景下视觉效果差，且硬编码色值散落在各处。
+
+**解决**：创建独立的 `element-dark.css`，将所有硬编码色值替换为 CSS 自定义属性引用（`var(--variable)`）。覆盖 Radio Button、Select、Table、Tag、Alert、Dropdown 等全部使用到的组件样式。
+
+---
+
+## 8. 未来改进计划
+
+- [ ] 接入抖音开放平台 API，实现多平台数据对比
+- [ ] 添加视频详情弹窗（封面、描述、标签、UP主信息）
+- [ ] 增加时间趋势折线图（每日播放量变化）
+- [ ] 支持自定义分类规则
+- [ ] 添加数据缓存机制（IndexedDB），减少 API 请求
+- [ ] 支持导出 PDF 报表
+- [ ] 移动端 PWA 支持
+- [ ] 国际化（i18n）支持
+
+---
+
+## 技术参考
+
+- [B站 API 文档](https://github.com/SocialSisterYi/bilibili-API-collect)
+- [Vue 3 官方文档](https://cn.vuejs.org/)
+- [Vite 官方文档](https://vite.dev/)
+- [Element Plus 官方文档](https://element-plus.org/)
+- [ECharts 官方文档](https://echarts.apache.org/)
+- [GSAP 官方文档](https://gsap.com/docs/)
+- [设计基因参考](https://github.com/awesome-design-md/awesome-design-md)
+
+---
+
+**项目作者**：RUI
+**开发时间**：2026年5月
+**许可协议**：[MIT](LICENSE)
