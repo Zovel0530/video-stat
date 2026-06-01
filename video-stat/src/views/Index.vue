@@ -76,17 +76,33 @@ async function fetchData() {
       allVideos = filterByPeriod(allVideos, 7)
     } else {
       // 近30天：拉最近4周归档榜单，合并去重
-      const seriesList = await fetchWeeklySeriesList()
-      const recentSeries = seriesList.slice(0, 4) // 最近4周
-      const seen = new Set()
-      for (const s of recentSeries) {
-        const { list } = await fetchWeeklySeriesOne(s.number)
-        for (const v of list) {
-          if (!seen.has(v.bvid)) {
-            seen.add(v.bvid)
-            allVideos.push(v)
+      try {
+        const seriesList = await fetchWeeklySeriesList()
+        const recentSeries = seriesList.slice(0, 4)
+        const seen = new Set()
+        for (const s of recentSeries) {
+          try {
+            const { list } = await fetchWeeklySeriesOne(s.number)
+            for (const v of list) {
+              if (!seen.has(v.bvid)) {
+                seen.add(v.bvid)
+                allVideos.push(v)
+              }
+            }
+          } catch (e) {
+            // 某一周拉取失败不影响其他周
+            console.warn(`拉取第${s.number}周数据失败:`, e.message)
           }
         }
+      } catch (e) {
+        // 归档API整体失败时，回退到当前热门API + 30天过滤
+        console.warn('归档API不可用，回退到热门API:', e.message)
+        for (let p = 1; p <= 3; p++) {
+          const { list, noMore } = await fetchPopularVideos(p, 50)
+          allVideos.push(...list)
+          if (noMore) break
+        }
+        allVideos = filterByPeriod(allVideos, 30)
       }
     }
 

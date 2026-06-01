@@ -12,8 +12,8 @@ export function fetchPopularVideos(page = 1, pageSize = 50) {
 // 获取每周排行榜归档列表
 export function fetchWeeklySeriesList() {
   return request.get('/x/web-interface/popular/series/list').then(res => {
-    const list = res.data?.list || []
-    // 按 number 降序排列（最新在前）
+    // 注意：/series/list 的 data 直接是数组，不像其他接口是 { list: [] }
+    const list = Array.isArray(res.data) ? res.data : (res.data?.list || [])
     return list.sort((a, b) => b.number - a.number)
   })
 }
