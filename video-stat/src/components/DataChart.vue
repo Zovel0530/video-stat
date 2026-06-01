@@ -16,8 +16,8 @@ const isDark = computed(() => theme.value === 'dark')
 
 const pieColors = computed(() =>
   isDark.value
-    ? ['#b89764', '#c9ad80', '#d4c0a0', '#dfd0bc', '#2a2a2d', '#1e1f23']
-    : ['#4488f0', '#6aa4f4', '#90c0f8', '#b4d4fa', '#c8c8cc', '#e0e0e0']
+    ? ['#b89764', '#c9ad80', '#d4c0a0', '#dfd0bc', '#a08060', '#7d6b50', '#5c5040', '#2a2a2d', '#3a3530', '#1e1f23']
+    : ['#4488f0', '#6aa4f4', '#90c0f8', '#b4d4fa', '#5b9bd5', '#7799bb', '#99aaaa', '#c8c8cc', '#a0a0a4', '#e0e0e0']
 )
 
 const pieOption = computed(() => ({
