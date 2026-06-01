@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { formatNumber } from '../utils/date.js'
 
@@ -19,7 +19,7 @@ const avgEngagement = computed(() => {
 })
 const topCategory = computed(() => props.categoryStats[0])
 
-watch(() => props.videos, () => {
+function animateNumbers() {
   ctx?.revert()
   if (!container.value) return
   ctx = gsap.context(() => {
@@ -29,7 +29,15 @@ watch(() => props.videos, () => {
       onUpdate: function() { const o = this.targets()[0]; animTotal.value = o.t; animViews.value = o.v; animLikes.value = o.l; animEngage.value = o.e },
     })
   }, container.value)
-}, { deep: true, immediate: true })
+}
+
+// 初始渲染：DOM 挂载完成后执行动画
+onMounted(() => {
+  if (props.videos.length > 0) animateNumbers()
+})
+
+// 后续数据变化（如切换时间范围重新获取）
+watch(() => props.videos, () => animateNumbers(), { deep: true })
 
 onUnmounted(() => { ctx?.revert() })
 </script>

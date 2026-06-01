@@ -11,13 +11,10 @@ const props = defineProps({
 const container = ref(null)
 let ctx
 
-// 监听数据变化，动画展示表格行
-watch(() => props.videos, async () => {
-  await nextTick()
+function animateTableRows() {
   ctx?.revert()
   if (!container.value) return
   ctx = gsap.context(() => {
-    // 表格整体一次性淡入（行交错在大量数据时可能卡顿）
     gsap.from('.el-table__body-wrapper tbody tr', {
       y: 16,
       autoAlpha: 0,
@@ -26,6 +23,18 @@ watch(() => props.videos, async () => {
       ease: 'power2.out',
     })
   }, container.value)
+}
+
+// 初始渲染：DOM 挂载完成后执行动画
+onMounted(async () => {
+  await nextTick()
+  if (props.videos.length > 0) animateTableRows()
+})
+
+// 后续数据变化（如切换时间范围重新获取）
+watch(() => props.videos, async () => {
+  await nextTick()
+  animateTableRows()
 }, { deep: true })
 
 onUnmounted(() => {
