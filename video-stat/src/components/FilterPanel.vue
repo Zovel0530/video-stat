@@ -6,7 +6,7 @@ const emit = defineEmits(['update:platform', 'update:period', 'update:sortBy', '
 
 const platforms = [
   { value: 'bilibili', label: 'B站' },
-  { value: 'douyin', label: '抖音', disabled: true },
+  { value: 'douyin', label: '抖音 (开发中)', disabled: true },
 ]
 const periods = [
   { value: 'week', label: '近7天' },
