@@ -72,10 +72,10 @@ async function fetchData() {
         allVideos.push(...list)
         if (noMore) break
       }
-      // 过滤7天内的视频
       allVideos = filterByPeriod(allVideos, 7)
     } else {
-      // 近30天：拉最近4周归档榜单，合并去重
+      // 近30天：先尝试归档API（需登录，大概率失败），回退到热门API拉更多页
+      let usedArchive = false
       try {
         const seriesList = await fetchWeeklySeriesList()
         const recentSeries = seriesList.slice(0, 4)
@@ -84,19 +84,20 @@ async function fetchData() {
           try {
             const { list } = await fetchWeeklySeriesOne(s.number)
             for (const v of list) {
-              if (!seen.has(v.bvid)) {
-                seen.add(v.bvid)
-                allVideos.push(v)
-              }
+              if (!seen.has(v.bvid)) { seen.add(v.bvid); allVideos.push(v) }
             }
           } catch (e) {
-            // 某一周拉取失败不影响其他周
             console.warn(`拉取第${s.number}周数据失败:`, e.message)
           }
         }
+        usedArchive = allVideos.length > 0
       } catch (e) {
-        // 归档API整体失败时，回退到当前热门API + 30天过滤
-        console.warn('归档API不可用，回退到热门API:', e.message)
+        console.warn('归档API不可用:', e.message)
+      }
+
+      // 归档API未返回数据时，回退到热门API
+      if (!usedArchive) {
+        console.warn('归档API无数据，回退到热门API（近30天仅反映当前热门趋势）')
         for (let p = 1; p <= 3; p++) {
           const { list, noMore } = await fetchPopularVideos(p, 50)
           allVideos.push(...list)

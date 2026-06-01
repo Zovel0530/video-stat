@@ -1,9 +1,18 @@
 import request from './request.js'
 
+// B站 API 返回格式：{ code: 0, message: "OK", data: ... }
+// code !== 0 表示业务错误（鉴权、参数等），需要当做异常处理
+function checkCode(res) {
+  if (res.code !== 0) {
+    throw new Error(`B站 API 错误 (code=${res.code}): ${res.message || '未知错误'}`)
+  }
+  return res
+}
+
 export function fetchPopularVideos(page = 1, pageSize = 50) {
   return request.get('/x/web-interface/popular', {
     params: { pn: page, ps: pageSize },
-  }).then(res => {
+  }).then(checkCode).then(res => {
     const list = (res.data?.list || []).map(formatVideo)
     return { list, noMore: res.data?.no_more }
   })
@@ -11,18 +20,18 @@ export function fetchPopularVideos(page = 1, pageSize = 50) {
 
 // 获取每周排行榜归档列表
 export function fetchWeeklySeriesList() {
-  return request.get('/x/web-interface/popular/series/list').then(res => {
-    // 注意：/series/list 的 data 直接是数组，不像其他接口是 { list: [] }
+  return request.get('/x/web-interface/popular/series/list').then(checkCode).then(res => {
+    // /series/list 的 data 可能是 { list: [...] } 或直接是数组
     const list = Array.isArray(res.data) ? res.data : (res.data?.list || [])
     return list.sort((a, b) => b.number - a.number)
   })
 }
 
-// 获取某一周的排行榜数据
+// 获取某一周的排行榜数据（⚠️ 需要登录 Cookie，否则返回 -352）
 export function fetchWeeklySeriesOne(number) {
   return request.get('/x/web-interface/popular/series/one', {
     params: { number },
-  }).then(res => {
+  }).then(checkCode).then(res => {
     const list = (res.data?.list || []).map(formatVideo)
     return { list, number, name: res.data?.config?.name || '' }
   })
