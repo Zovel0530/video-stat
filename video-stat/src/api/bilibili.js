@@ -9,6 +9,25 @@ export function fetchPopularVideos(page = 1, pageSize = 50) {
   })
 }
 
+// 获取每周排行榜归档列表
+export function fetchWeeklySeriesList() {
+  return request.get('/x/web-interface/popular/series/list').then(res => {
+    const list = res.data?.list || []
+    // 按 number 降序排列（最新在前）
+    return list.sort((a, b) => b.number - a.number)
+  })
+}
+
+// 获取某一周的排行榜数据
+export function fetchWeeklySeriesOne(number) {
+  return request.get('/x/web-interface/popular/series/one', {
+    params: { number },
+  }).then(res => {
+    const list = (res.data?.list || []).map(formatVideo)
+    return { list, number, name: res.data?.config?.name || '' }
+  })
+}
+
 export function fetchVideoDetail(bvid) {
   return request.get('/x/web-interface/view/detail', {
     params: { bvid },

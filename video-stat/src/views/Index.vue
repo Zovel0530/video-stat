@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
-import { fetchPopularVideos } from '../api/bilibili.js'
+import { fetchPopularVideos, fetchWeeklySeriesList, fetchWeeklySeriesOne } from '../api/bilibili.js'
 import { classifyVideo, getCategoryStats, filterByPeriod } from '../utils/classifier.js'
 import FilterPanel from '../components/FilterPanel.vue'
 import SummaryCard from '../components/SummaryCard.vue'
@@ -62,17 +62,38 @@ watch(sortBy, async () => {
 
 async function fetchData() {
   loading.value = true; errorMsg.value = ''
-  const days = period.value === 'month' ? 30 : 7
   try {
-    const allVideos = []
-    for (let p = 1; p <= 2; p++) {
-      const { list, noMore } = await fetchPopularVideos(p, 50)
-      allVideos.push(...list)
-      if (noMore) break
+    let allVideos = []
+
+    if (period.value === 'week') {
+      // 近7天：拉当前热门榜单，按发布时间过滤
+      for (let p = 1; p <= 2; p++) {
+        const { list, noMore } = await fetchPopularVideos(p, 50)
+        allVideos.push(...list)
+        if (noMore) break
+      }
+      // 过滤7天内的视频
+      allVideos = filterByPeriod(allVideos, 7)
+    } else {
+      // 近30天：拉最近4周归档榜单，合并去重
+      const seriesList = await fetchWeeklySeriesList()
+      const recentSeries = seriesList.slice(0, 4) // 最近4周
+      const seen = new Set()
+      for (const s of recentSeries) {
+        const { list } = await fetchWeeklySeriesOne(s.number)
+        for (const v of list) {
+          if (!seen.has(v.bvid)) {
+            seen.add(v.bvid)
+            allVideos.push(v)
+          }
+        }
+      }
     }
+
+    // 二次去重（week 路径可能跨页重复）
     const seen = new Set()
     const unique = allVideos.filter(v => { if (seen.has(v.bvid)) return false; seen.add(v.bvid); return true })
-    videos.value = filterByPeriod(unique, days).map(classifyVideo)
+    videos.value = unique.map(classifyVideo)
     categoryStats.value = getCategoryStats(videos.value)
     hasData.value = true
   } catch (err) { errorMsg.value = err.message || '获取数据失败'; console.error(err) }
