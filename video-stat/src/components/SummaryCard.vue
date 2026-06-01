@@ -29,7 +29,7 @@ watch(() => props.videos, () => {
       onUpdate: function() { const o = this.targets()[0]; animTotal.value = o.t; animViews.value = o.v; animLikes.value = o.l; animEngage.value = o.e },
     })
   }, container.value)
-}, { deep: true })
+}, { deep: true, immediate: true })
 
 onUnmounted(() => { ctx?.revert() })
 </script>
